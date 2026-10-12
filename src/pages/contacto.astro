@@ -1,0 +1,193 @@
+---
+// Página de contacto: accesos directos por clínica, formulario WhatsApp,
+// horarios y direcciones de ambas sedes, y acceso a urgencias.
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import ContactForm from '../components/forms/ContactForm.astro';
+import { clinics, telHref, waUrl } from '../data/clinics';
+import { breadcrumbSchema, clinicSchema } from '../data/schema';
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Contacto', url: '/contacto' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contacto | Clínica Dental Dr. Baos',
+    url: new URL('/contacto', Astro.site).href,
+  },
+  ...clinics.map((c) => clinicSchema(c, `Clínica dental en ${c.locality} (${c.region}).`)),
+  breadcrumbSchema(crumbs),
+];
+---
+<PageLayout
+  title="Contacto y Cita | Clínica Dental Dr. Baos"
+  description="Contacta con la Clínica Dental Dr. Baos en Argés (Toledo) y Majadahonda (Madrid): teléfonos, WhatsApp, horarios y direcciones. Pide tu cita en minutos."
+  schema={schema}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Contacto"
+    title="Hablemos de tu sonrisa"
+    intro="Escríbenos por WhatsApp, llámanos o déjanos tus datos y te contactamos para confirmar tu cita en la clínica que te quede más cerca. La primera visita es informativa y sin compromiso."
+  />
+
+  <!-- Accesos directos por clínica -->
+  <section class="section section--white quick">
+    <div class="container quick-grid">
+      {clinics.map((c) => (
+        <article class="quick-item">
+          <span class="quick-tag">{c.tag}</span>
+          <h2 class="quick-name"><a href={c.pageUrl}>{c.name}</a></h2>
+          <ul class="quick-phones">
+            {c.phone.map((p) => <li><a href={telHref(p)}>{p}</a></li>)}
+          </ul>
+          <div class="quick-actions">
+            <a href={waUrl(c, `Hola, me gustaría pedir cita en ${c.shortName}.`)} class="btn btn-gold" target="_blank" rel="noopener">
+              <WhatsAppIcon size={15} /> WhatsApp {c.shortName}
+            </a>
+            <a href={telHref(c.phone[0])} class="btn btn-outline-dark">Llamar</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Formulario -->
+  <section class="section section--black form-section" id="formulario">
+    <div class="container form-grid">
+      <header>
+        <span class="eyebrow">Pide tu cita</span>
+        <h2 class="h2">Te contactamos nosotros</h2>
+        <p class="lead">Rellena el formulario y se abrirá WhatsApp con tu mensaje preparado. Te respondemos en minutos, dentro del horario de la clínica.</p>
+      </header>
+      <ContactForm />
+    </div>
+  </section>
+
+  <!-- Horarios y direcciones -->
+  <section class="section section--cream">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Visítanos</span>
+        <h2 class="h2">Horarios y direcciones</h2>
+      </header>
+      <div class="visit-grid">
+        {clinics.map((c) => (
+          <div class="visit-item">
+            <h3 class="visit-name">{c.name}</h3>
+            <p class="visit-address">{c.street}<br />{c.postalCode} {c.locality}, {c.region}</p>
+            <table class="hours">
+              <tbody>
+                {c.hoursTable.map((h) => (
+                  <tr><th scope="row">{h.days}</th><td>{h.time}</td></tr>
+                ))}
+              </tbody>
+            </table>
+            <a href={c.mapsUrl} class="visit-maps" target="_blank" rel="noopener">Cómo llegar en Google Maps →</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Urgencias -->
+  <section class="section section--white urgent">
+    <div class="container urgent-inner">
+      <div>
+        <span class="eyebrow">¿Tienes dolor?</span>
+        <h2 class="h2">Urgencias dentales</h2>
+        <p class="lead">Si tienes dolor, un flemón o un golpe, llámanos directamente: damos prioridad a las urgencias y buscamos atenderte el mismo día dentro de nuestro horario.</p>
+      </div>
+      <div class="urgent-actions">
+        {clinics.map((c, i) => (
+          <a href={telHref(c.phone[0])} class:list={['btn', i === 0 ? 'btn-gold' : 'btn-outline-dark']}>Llamar a {c.shortName} · {c.phone[0]}</a>
+        ))}
+        <a href="/tratamientos/urgencias-dentales" class="urgent-link">Qué hacer mientras llegas →</a>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  /* Accesos directos */
+  .quick-grid { display: grid; grid-template-columns: 1fr; }
+  .quick-item { padding-block: 28px; border-top: 1px solid var(--border-light); }
+  .quick-item:last-child { border-bottom: 1px solid var(--border-light); }
+  .quick-tag {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+    margin-bottom: 4px;
+  }
+  .quick-name { font-size: clamp(24px, 1.4vw + 18px, 30px); letter-spacing: -.3px; }
+  .quick-name a { display: inline-flex; align-items: center; min-height: var(--tap); transition: color .2s; }
+  .quick-name a:hover { color: var(--gold-ink); }
+  .quick-phones { display: flex; flex-wrap: wrap; column-gap: 24px; margin-top: 4px; }
+  .quick-phones a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -.2px;
+  }
+  .quick-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+
+  /* Formulario */
+  .form-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: start; }
+  .form-section .eyebrow { color: var(--gold); }
+  .form-section .h2 { color: var(--on-dark); }
+  .form-section .lead { margin-top: 14px; max-width: 460px; }
+
+  /* Horarios */
+  .visit-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+  .visit-item { border-top: 1px solid var(--border-light); padding-top: 24px; }
+  .visit-name { font-size: 24px; letter-spacing: -.3px; }
+  .visit-address { margin-top: 10px; font-size: 15px; line-height: 1.6; color: var(--muted-light); }
+  .hours { margin-top: 16px; border-collapse: collapse; width: 100%; max-width: 440px; }
+  .hours th, .hours td { padding-block: 8px; border-bottom: 1px solid var(--border-light); font-size: 15px; vertical-align: top; text-align: left; }
+  .hours th { font-weight: 400; color: var(--muted-light); padding-right: 16px; white-space: nowrap; }
+  .visit-maps {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gold-ink);
+  }
+
+  /* Urgencias */
+  .urgent-inner { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: end; }
+  .urgent .eyebrow { color: var(--muted-light); }
+  .urgent .lead { margin-top: 14px; max-width: 560px; }
+  .urgent-actions { display: flex; flex-direction: column; gap: 8px; }
+  .urgent-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gold-ink);
+  }
+
+  @media (min-width: 480px) {
+    .quick-actions { flex-direction: row; flex-wrap: wrap; }
+  }
+  @media (min-width: 900px) {
+    .quick-grid { grid-template-columns: 1fr 1fr; column-gap: 48px; }
+    .quick-item { padding-block: 36px; border-bottom: 1px solid var(--border-light); }
+    .form-grid { grid-template-columns: .9fr 1.1fr; gap: clamp(48px, 6vw, 80px); }
+    .visit-grid { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .urgent-inner { grid-template-columns: 1.3fr 1fr; gap: 64px; }
+  }
+</style>

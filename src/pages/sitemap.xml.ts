@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 import { treatments } from '../data/treatments';
 import { getPublishedPosts, postUrl } from '../data/blog';
 
-const STATIC = ['/', '/arges', '/dentista-majadahonda', '/tratamientos', '/equipo', '/plan-vip', '/blog', '/aviso-legal', '/politica-privacidad', '/politica-cookies'];
+const STATIC = ['/', '/arges', '/dentista-majadahonda', '/tratamientos', '/equipo', '/plan-vip', '/contacto', '/blog', '/aviso-legal', '/politica-privacidad', '/politica-cookies'];
 
 export const GET: APIRoute = async ({ site }) => {
   const posts = await getPublishedPosts();

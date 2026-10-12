@@ -11,7 +11,7 @@ export const navLinks: NavLink[] = [
   { label: 'Equipo', href: '/equipo' },
   { label: 'Plan VIP', href: '/plan-vip', mobileOnly: true },
   { label: 'Blog', href: '/blog' },
-  { label: 'Contacto', href: '/#contacto' },
+  { label: 'Contacto', href: '/contacto' },
 ];
 
 export const isCurrent = (href: string, pathname: string): boolean => {
