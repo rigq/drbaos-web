@@ -1,0 +1,60 @@
+---
+// Dos (o más) listas con título y viñetas de guion, separadas por filetes.
+import type { PointGroup } from '../../data/treatment-pages';
+
+interface Props {
+  lists: PointGroup[];
+}
+const { lists } = Astro.props;
+---
+<div class="plists">
+  {lists.map((l) => (
+    <div class="plist">
+      <h3 class="plist-title">{l.title}</h3>
+      <ul>
+        {l.items.map((it) => <li>{it}</li>)}
+      </ul>
+    </div>
+  ))}
+</div>
+
+<style>
+  .plists {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .plist-title {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+    margin-bottom: 4px;
+  }
+  .plist ul { border-top: 1px solid var(--border-light); }
+  .plist li {
+    position: relative;
+    padding: 13px 0 13px 26px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--black);
+  }
+  .plist li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    top: 13px;
+    color: var(--gold-ink);
+    font-weight: 300;
+  }
+
+  @media (min-width: 640px) {
+    .plists { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+  @media (min-width: 900px) {
+    .plist li { font-size: 14px; }
+  }
+</style>

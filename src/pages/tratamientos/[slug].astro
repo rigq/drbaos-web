@@ -1,0 +1,156 @@
+---
+// Página canónica de tratamiento (docs/site-architecture.md §5).
+// El contenido vive en src/data/treatment-pages.ts.
+import PageLayout from '../../layouts/PageLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import PointLists from '../../components/ui/PointLists.astro';
+import NumberedList from '../../components/ui/NumberedList.astro';
+import ClinicChooser from '../../components/ui/ClinicChooser.astro';
+import Faq from '../../components/ui/Faq.astro';
+import WhatsAppIcon from '../../components/ui/WhatsAppIcon.astro';
+import ContactoSection from '../../components/sections/ContactoSection.astro';
+import { treatmentPages, type TreatmentPage } from '../../data/treatment-pages';
+import { treatments } from '../../data/treatments';
+import { clinics, telHref, waUrl } from '../../data/clinics';
+import { faqSchema, breadcrumbSchema } from '../../data/schema';
+
+export function getStaticPaths() {
+  return treatmentPages.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+interface Props { page: TreatmentPage }
+const { page } = Astro.props;
+
+const meta = treatments.find((t) => t.slug === page.slug)!;
+const others = treatments.filter((t) => t.slug !== page.slug);
+const url = `/tratamientos/${page.slug}`;
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Tratamientos', url: '/tratamientos' },
+  { name: meta.name, url },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalWebPage',
+    name: page.metaTitle,
+    description: page.metaDescription,
+    url: new URL(url, Astro.site).href,
+    about: { '@type': 'MedicalProcedure', name: meta.name },
+    provider: clinics.map((c) => ({ '@id': `${new URL(c.pageUrl, Astro.site).href}#clinic` })),
+  },
+  faqSchema(page.faqs),
+  breadcrumbSchema(crumbs),
+];
+
+const [arges, majadahonda] = clinics;
+---
+<PageLayout title={page.metaTitle} description={page.metaDescription} ogImage={page.image.src} schema={schema}>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow={page.eyebrow}
+    title={page.h1}
+    intro={page.intro}
+    image={{ ...page.image, width: 1400, height: 933 }}
+    note={page.facts.join('  ·  ')}
+  >
+    {page.urgent ? (
+      <>
+        <a href={telHref(arges.phone[0])} class="btn btn-gold">Llamar a Argés · {arges.phone[0]}</a>
+        <a href={telHref(majadahonda.phone[0])} class="btn btn-outline-light">Llamar a Majadahonda · {majadahonda.phone[0]}</a>
+      </>
+    ) : (
+      <>
+        <a href={waUrl(arges, `Hola, me gustaría pedir cita para ${meta.name.toLowerCase()} en Argés.`)} class="btn btn-gold" target="_blank" rel="noopener">
+          <WhatsAppIcon size={15} /> Cita en Argés
+        </a>
+        <a href={waUrl(majadahonda, `Hola, me gustaría pedir cita para ${meta.name.toLowerCase()} en Majadahonda.`)} class="btn btn-outline-light" target="_blank" rel="noopener">
+          <WhatsAppIcon size={15} /> Cita en Majadahonda
+        </a>
+      </>
+    )}
+  </PageHero>
+
+  <section class="section section--cream">
+    <div class="container what">
+      <div class="what-text">
+        <span class="eyebrow">{meta.name}</span>
+        <h2 class="h2">{page.whatIs.heading}</h2>
+        <p class="lead">{page.whatIs.body}</p>
+      </div>
+      <PointLists lists={page.whatIs.lists} />
+    </div>
+  </section>
+
+  <section class="section section--black">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">{page.detail.eyebrow}</span>
+        <h2 class="h2">{page.detail.heading}</h2>
+        {page.detail.intro && <p class="lead">{page.detail.intro}</p>}
+      </header>
+      <NumberedList items={page.detail.groups} tone="dark" columns={page.detail.groups.length === 3 ? 3 : 2} />
+    </div>
+  </section>
+
+  <ClinicChooser
+    treatment={meta.name}
+    callFirst={page.urgent}
+    heading={page.urgent ? 'Llama a la clínica que te quede más cerca' : undefined}
+  />
+
+  <Faq faqs={page.faqs} heading={page.faqHeading} intro={page.faqIntro} tone="cream" />
+
+  <section class="section section--white others">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Otros tratamientos</span>
+        <h2 class="h2">También te podemos ayudar con</h2>
+      </header>
+      <ul class="others-list">
+        {others.map((t) => (
+          <li><a href={t.url}><span class="others-name">{t.name}</span><span class="others-desc">{t.desc}</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <ContactoSection eyebrow={page.cta.eyebrow} heading={page.cta.heading} intro={page.cta.intro} treatment={meta.name} />
+</PageLayout>
+
+<style>
+  .what {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .what-text .eyebrow { color: var(--muted-light); }
+  .what-text .lead { margin-top: 18px; }
+
+  .others-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--border-light);
+  }
+  .others-list a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-block: 16px;
+    border-bottom: 1px solid var(--border-light);
+    transition: padding-left .3s var(--ease);
+  }
+  .others-name { font-family: var(--font-serif); font-size: 20px; color: var(--black); }
+  .others-desc { font-size: 13px; color: var(--muted-light); }
+
+  @media (min-width: 900px) {
+    .what { grid-template-columns: 1fr 1fr; gap: clamp(48px, 6vw, 80px); align-items: start; }
+    .others-list { grid-template-columns: 1fr 1fr; column-gap: 48px; }
+  }
+  @media (hover: hover) {
+    .others-list a:hover { padding-left: 8px; }
+    .others-list a:hover .others-name { color: var(--gold-ink); }
+  }
+</style>

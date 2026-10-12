@@ -1,0 +1,74 @@
+---
+// Landing de Google Ads — Implantes Argés (nueva).
+// IMPORTANTE: solo usa afirmaciones que el sitio ya hace para Argés (página de
+// implantes): diagnóstico 3D, cirugía guiada, presupuesto cerrado, financiación y
+// garantía del fabricante. Las ofertas de la landing de Majadahonda (escáner 3D
+// gratis, garantía de 7 años por escrito, sedación consciente) NO se incluyen hasta
+// que la clínica confirme que también aplican en Argés.
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import ImplantLanding from '../../components/landing/ImplantLanding.astro';
+import { getClinic } from '../../data/clinics';
+import { faqSchema } from '../../data/schema';
+
+const clinic = getClinic('arges');
+const waText = 'Hola, me gustaría pedir una valoración de implantes dentales en Argés.';
+
+const faqs = [
+  { q: '¿Duele ponerse un implante dental?', a: 'No. La colocación se realiza con anestesia local, por lo que durante la intervención no sentirás dolor, solo cierta presión. La mayoría de pacientes retoman su vida normal al día siguiente. Te pautamos medicación e indicaciones sencillas para que el postoperatorio sea cómodo.' },
+  { q: '¿Cuánto tiempo tardaré en tener mi diente?', a: 'Depende de cada caso. Tras colocar el implante, el hueso necesita un periodo de integración de varios meses antes de colocar la corona definitiva. En casos seleccionados es posible la carga inmediata. En la primera visita en Argés te damos un plan de tiempos personalizado.' },
+  { q: '¿Cuánto cuesta? ¿Puedo financiarlo?', a: 'Tras la primera valoración te preparamos un presupuesto cerrado y sin sorpresas, y disponemos de financiación para que puedas fraccionar el tratamiento en cuotas cómodas.' },
+  { q: 'Llevo tiempo sin el diente, ¿soy candidato?', a: 'En la mayoría de los casos, sí. Cuando ha pasado tiempo puede haber pérdida de hueso, pero existen técnicas de regeneración ósea que permiten recuperar el volumen necesario. Lo confirmamos con un estudio radiológico 3D antes de planificar tu tratamiento.' },
+  { q: '¿Tienen garantía los implantes?', a: 'Sí. Trabajamos con implantes de primeras marcas que cuentan con garantía del fabricante y respaldamos el trabajo realizado en la clínica. Te explicamos las condiciones de garantía en tu primera valoración.' },
+];
+---
+<LandingLayout
+  title="Implantes Dentales en Toledo (Argés) | Clínica Dr. Baos"
+  description="Implantes dentales en Argés, Toledo: recupera tu diente de forma definitiva, sin dañar los de al lado y sin dolor. Diagnóstico 3D, cirugía guiada, presupuesto cerrado y financiación. Pide cita por WhatsApp."
+  ogImage="/assets/images/tratamientos/implantes.avif"
+  schema={faqSchema(faqs)}
+  noindex
+  clinic={clinic}
+  waText={waText}
+>
+  <ImplantLanding
+    clinic={clinic}
+    waText={waText}
+    h1="Vuelve a morder y sonreír sin preocuparte por tus dientes"
+    intro="Implantes dentales en Argés, a un paso de Toledo, con diagnóstico 3D y cirugía guiada. Presupuesto cerrado y financiación a tu medida para que vuelvas a comer cuanto antes."
+    highlights={[
+      'Primera valoración sin compromiso',
+      'Resultado natural: no se nota que es un implante',
+      'Implantes de primeras marcas con garantía del fabricante',
+    ]}
+    formHeading="Pide tu valoración"
+    formSub="Sin compromiso. Te contactamos por WhatsApp."
+    submitLabel="Reservar mi valoración"
+    benefits={[
+      { title: 'Masticas al 100%', body: 'Come lo que quieras con la misma fuerza que con tu diente natural.' },
+      { title: 'Sonríes sin complejos', body: 'Estética natural, indistinguible del resto de tu dentadura.' },
+      { title: 'Solución duradera', body: 'Fijo, sin dentaduras que se mueven. Bien cuidado, dura muchos años.' },
+      { title: 'Sin dolor', body: 'Anestesia local y un postoperatorio guiado. La mayoría retoma su vida al día siguiente.' },
+    ]}
+    painPoints={[
+      { title: 'Evitas ciertos alimentos', body: 'Dejas de lado lo que te gusta porque no puedes masticarlo bien o te da miedo.' },
+      { title: 'Te tapas la boca al reír', body: 'El hueco te da vergüenza y evitas fotos, reuniones o sonreír con naturalidad.' },
+      { title: 'Tu dentadura se mueve', body: 'Estás cansado/a de la removible que baila, molesta o se sale al comer o hablar.' },
+    ]}
+    differentiators={[
+      'Estudio radiológico 3D y planificación digital',
+      'Cirugía guiada: más precisión, menos molestias',
+      'Financiación a tu medida',
+      'Presupuesto cerrado, sin sorpresas',
+      'Nuestra clínica principal, con 4,9★ en Google',
+    ]}
+    steps={[
+      { title: 'Valoración y estudio 3D', body: 'Estudiamos tu boca y te explicamos tu caso con claridad.' },
+      { title: 'Plan y presupuesto cerrado', body: 'Recibes por escrito el tratamiento y el precio, sin letra pequeña.' },
+      { title: 'Colocamos tu implante', body: 'Con cirugía guiada y anestesia local. Rápido, preciso y sin dolor.' },
+      { title: 'Tu nueva sonrisa', body: 'Corona a medida y revisiones de mantenimiento para que dure años.' },
+    ]}
+    faqs={faqs}
+    ctaHeading="En Argés, a un paso de Toledo"
+    ctaBody="Nuestra clínica principal, con el mismo equipo de especialistas que atiende en Majadahonda."
+  />
+</LandingLayout>

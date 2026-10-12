@@ -1,0 +1,164 @@
+---
+// Formulario de landing (Ads): nombre, teléfono, dientes a reponer y consentimiento RGPD.
+// Abre WhatsApp con el mensaje y empuja lead_whatsapp (lead_source 'formulario').
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import type { Clinic } from '../../data/clinics';
+
+interface Props {
+  clinic: Clinic;
+  treatment: string;
+  heading: string;
+  subheading?: string;
+  submitLabel: string;
+}
+const { clinic, treatment, heading, subheading, submitLabel } = Astro.props;
+---
+<form class="lp-form" data-landing-form data-wa={clinic.whatsapp} data-sede={clinic.shortName} data-treatment={treatment} novalidate>
+  <h2 class="lp-form-title">{heading}</h2>
+  {subheading && <p class="lp-form-sub">{subheading}</p>}
+
+  <div class="field">
+    <label for="lf-nombre">Nombre *</label>
+    <input type="text" id="lf-nombre" name="nombre" autocomplete="name" minlength="2" maxlength="60" required />
+    <span class="field-error" aria-live="polite"></span>
+  </div>
+  <div class="field">
+    <label for="lf-telefono">Teléfono *</label>
+    <input type="tel" id="lf-telefono" name="telefono" inputmode="tel" autocomplete="tel" maxlength="20" required />
+    <span class="field-error" aria-live="polite"></span>
+  </div>
+  <div class="field">
+    <label for="lf-dientes">¿Cuántos dientes te faltan? <span class="optional">(opcional)</span></label>
+    <select id="lf-dientes" name="dientes">
+      <option value="">Selecciona</option>
+      <option>Un diente</option>
+      <option>Varios dientes</option>
+      <option>Toda la arcada</option>
+      <option>No estoy seguro/a</option>
+    </select>
+  </div>
+  <label class="consent">
+    <input type="checkbox" name="consent" required />
+    <span>Acepto la <a href="/politica-privacidad" target="_blank">política de privacidad</a> y que me contacten sobre mi solicitud.</span>
+  </label>
+  <span class="field-error consent-error" aria-live="polite"></span>
+
+  <button type="submit" class="btn btn-gold btn-full lp-submit">
+    <WhatsAppIcon size={16} /> {submitLabel}
+  </button>
+  <p class="lp-form-note">Te respondemos lo antes posible · Sin compromiso</p>
+</form>
+
+<style>
+  .lp-form {
+    background: var(--white);
+    color: var(--black);
+    padding: 28px 20px;
+    border-top: 3px solid var(--gold);
+  }
+  .lp-form-title { font-size: 24px; letter-spacing: -.3px; }
+  .lp-form-sub { margin-top: 6px; font-size: 14px; color: var(--muted-light); }
+  .lp-form .field:first-of-type { margin-top: 20px; }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+  .optional { color: var(--muted-light); font-weight: 400; }
+  .field input, .field select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+    background: var(--white);
+    font-size: 16px;
+    color: var(--black);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .field input:focus, .field select:focus { border-color: var(--black); }
+  .field.has-error input { border-color: #B4462A; }
+  .field-error { display: block; margin-top: 4px; font-size: 12px; color: #B4462A; }
+  .field-error:empty { display: none; }
+
+  .consent {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 4px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted-light);
+    cursor: pointer;
+  }
+  .consent input { width: 20px; height: 20px; margin-top: 1px; flex-shrink: 0; accent-color: var(--black); }
+  .consent a { color: var(--black); text-decoration: underline; text-underline-offset: 3px; }
+  .lp-submit { margin-top: 18px; min-height: 52px; font-size: 15px; }
+  .lp-form-note { margin-top: 10px; text-align: center; font-size: 12px; color: var(--muted-light); }
+
+  @media (min-width: 640px) {
+    .lp-form { padding: 32px; }
+  }
+</style>
+
+<script>
+  const countDigits = (s: string) => (s.match(/\d/g) || []).length;
+  const isValidPhone = (s: string) => /^[+\d\s]+$/.test(s) && countDigits(s) >= 9 && countDigits(s) <= 15;
+
+  document.querySelectorAll<HTMLFormElement>('[data-landing-form]').forEach((form) => {
+    const nombre = form.elements.namedItem('nombre') as HTMLInputElement;
+    const telefono = form.elements.namedItem('telefono') as HTMLInputElement;
+    const dientes = form.elements.namedItem('dientes') as HTMLSelectElement;
+    const consent = form.elements.namedItem('consent') as HTMLInputElement;
+    const consentError = form.querySelector('.consent-error')!;
+
+    const setError = (input: HTMLInputElement, msg: string) => {
+      const field = input.closest('.field');
+      field?.classList.toggle('has-error', Boolean(msg));
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      const out = field?.querySelector('.field-error');
+      if (out) out.textContent = msg;
+    };
+
+    telefono.addEventListener('input', () => {
+      const clean = telefono.value.replace(/[^\d+\s]/g, '');
+      if (clean !== telefono.value) telefono.value = clean;
+      setError(telefono, '');
+    });
+    nombre.addEventListener('input', () => setError(nombre, ''));
+    consent.addEventListener('change', () => { if (consent.checked) consentError.textContent = ''; });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const n = nombre.value.trim();
+      const t = telefono.value.trim();
+      setError(nombre, ''); setError(telefono, ''); consentError.textContent = '';
+      let ok = true;
+      if (!n) { setError(nombre, 'Este campo es obligatorio'); ok = false; }
+      else if (n.length < 2) { setError(nombre, 'Escribe tu nombre completo'); ok = false; }
+      if (!t) { setError(telefono, 'Este campo es obligatorio'); ok = false; }
+      else if (!isValidPhone(t)) { setError(telefono, 'Introduce un teléfono válido (9 dígitos, solo números)'); ok = false; }
+      if (!consent.checked) { consentError.textContent = 'Necesitamos tu consentimiento para contactarte'; ok = false; }
+      if (!ok) { form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); return; }
+
+      const { wa, sede, treatment } = form.dataset;
+      let text = `Hola, soy ${n} y me gustaría pedir una valoración de ${treatment?.toLowerCase()} en ${sede}. Mi teléfono es ${t}.`;
+      if (dientes.value) text += ` Dientes a reponer: ${dientes.value}.`;
+      const url = `https://wa.me/${wa}?text=${encodeURIComponent(text)}`;
+
+      const w = window as unknown as { dataLayer?: unknown[] };
+      (w.dataLayer = w.dataLayer || []).push({ event: 'lead_whatsapp', lead_source: 'formulario', sede, tratamiento: treatment });
+
+      const win = window.open(url, '_blank');
+      if (!win) {
+        const a = document.createElement('a');
+        a.href = url; a.target = '_blank'; a.rel = 'noopener';
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+    });
+  });
+</script>

@@ -1,0 +1,78 @@
+---
+// "Disponible en las dos clínicas": un bloque por sede con WhatsApp prellenado
+// para el tratamiento y llamada directa. Sustituye a los enlaces "En Toledo → / En Majadahonda →".
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { clinics, telHref, waUrl } from '../../data/clinics';
+
+interface Props {
+  treatment: string;
+  /** Urgencias: la llamada pasa a ser la acción principal */
+  callFirst?: boolean;
+  heading?: string;
+}
+const { treatment, callFirst = false, heading = `${treatment} en Argés y en Majadahonda` } = Astro.props;
+---
+<section class="section section--white chooser">
+  <div class="container">
+    <header class="block-header">
+      <span class="eyebrow">Dos clínicas, el mismo equipo</span>
+      <h2 class="h2">{heading}</h2>
+    </header>
+    <div class="chooser-grid">
+      {clinics.map((c) => (
+        <div class="chooser-item">
+          <span class="chooser-tag">{c.tag}</span>
+          <h3 class="chooser-name"><a href={c.pageUrl}>{c.name}</a></h3>
+          <p class="chooser-meta">{c.address}<br />{c.hours}</p>
+          <div class="chooser-actions">
+            {callFirst ? (
+              <>
+                <a href={telHref(c.phone[0])} class="btn btn-gold">Llamar al {c.phone[0]}</a>
+                <a href={waUrl(c, `Hola, tengo una urgencia dental y me gustaría que me atendierais en ${c.shortName}.`)} class="btn btn-outline-dark" target="_blank" rel="noopener"><WhatsAppIcon size={15} /> WhatsApp</a>
+              </>
+            ) : (
+              <>
+                <a href={waUrl(c, `Hola, me gustaría pedir cita para ${treatment.toLowerCase()} en ${c.shortName}.`)} class="btn btn-gold" target="_blank" rel="noopener"><WhatsAppIcon size={15} /> Pedir cita en {c.shortName}</a>
+                <a href={telHref(c.phone[0])} class="btn btn-outline-dark">Llamar al {c.phone[0]}</a>
+              </>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .chooser-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid var(--border-light);
+  }
+  .chooser-item {
+    padding-block: 28px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .chooser-tag {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+    margin-bottom: 8px;
+  }
+  .chooser-name { font-size: clamp(22px, 1vw + 18px, 26px); letter-spacing: -.3px; }
+  .chooser-name a { display: inline-flex; align-items: center; min-height: var(--tap); transition: color .2s; }
+  .chooser-name a:hover { color: var(--gold-ink); }
+  .chooser-meta { margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--muted-light); }
+  .chooser-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+
+  @media (min-width: 480px) {
+    .chooser-actions { flex-direction: row; flex-wrap: wrap; }
+  }
+  @media (min-width: 900px) {
+    .chooser-grid { grid-template-columns: 1fr 1fr; column-gap: 48px; }
+    .chooser-item { padding-block: 36px; }
+  }
+</style>

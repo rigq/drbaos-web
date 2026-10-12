@@ -5,4 +5,336 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Redirecciones 301 de URLs heredadas: se añaden en la Fase 4.
+# ─── Cabeceras ──────────────────────────────────────────────
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+# ─── Redirecciones 301 de URLs del sitio anterior ──────────
+# force = true: la build genera archivos .html con el mismo nombre
+# (p. ej. dist/arges.html) y sin force Netlify los serviría en lugar de redirigir.
+
+[[redirects]]
+  from = "/arges.html"
+  to = "/arges"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/dentista-majadahonda.html"
+  to = "/dentista-majadahonda"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tratamientos.html"
+  to = "/tratamientos"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog.html"
+  to = "/blog"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/aviso-legal.html"
+  to = "/aviso-legal"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/politica-privacidad.html"
+  to = "/politica-privacidad"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/politica-cookies.html"
+  to = "/politica-cookies"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/implantes-dentales-toledo.html"
+  to = "/tratamientos/implantes-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/implantes-dentales-toledo"
+  to = "/tratamientos/implantes-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/implantes-dentales-majadahonda.html"
+  to = "/tratamientos/implantes-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/implantes-dentales-majadahonda"
+  to = "/tratamientos/implantes-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ortodoncia-invisible-invisalign.html"
+  to = "/tratamientos/ortodoncia-invisible"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ortodoncia-invisible-invisalign"
+  to = "/tratamientos/ortodoncia-invisible"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ortodoncia-invisible-invisalign-majadahonda.html"
+  to = "/tratamientos/ortodoncia-invisible"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ortodoncia-invisible-invisalign-majadahonda"
+  to = "/tratamientos/ortodoncia-invisible"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/estetica-dental.html"
+  to = "/tratamientos/estetica-dental"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/estetica-dental"
+  to = "/tratamientos/estetica-dental"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/estetica-dental-majadahonda.html"
+  to = "/tratamientos/estetica-dental"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/estetica-dental-majadahonda"
+  to = "/tratamientos/estetica-dental"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/endodoncia.html"
+  to = "/tratamientos/endodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/endodoncia"
+  to = "/tratamientos/endodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/endodoncia-majadahonda.html"
+  to = "/tratamientos/endodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/endodoncia-majadahonda"
+  to = "/tratamientos/endodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/periodoncia.html"
+  to = "/tratamientos/periodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/periodoncia"
+  to = "/tratamientos/periodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/periodoncia-majadahonda.html"
+  to = "/tratamientos/periodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/periodoncia-majadahonda"
+  to = "/tratamientos/periodoncia"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cirugia-oral.html"
+  to = "/tratamientos/cirugia-oral"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cirugia-oral"
+  to = "/tratamientos/cirugia-oral"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cirugia-oral-majadahonda.html"
+  to = "/tratamientos/cirugia-oral"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cirugia-oral-majadahonda"
+  to = "/tratamientos/cirugia-oral"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/odontopediatria.html"
+  to = "/tratamientos/odontopediatria"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/odontopediatria"
+  to = "/tratamientos/odontopediatria"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/odontopediatria-majadahonda.html"
+  to = "/tratamientos/odontopediatria"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/odontopediatria-majadahonda"
+  to = "/tratamientos/odontopediatria"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/urgencias-dentales.html"
+  to = "/tratamientos/urgencias-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/urgencias-dentales"
+  to = "/tratamientos/urgencias-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/urgencias-dentales-majadahonda.html"
+  to = "/tratamientos/urgencias-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/urgencias-dentales-majadahonda"
+  to = "/tratamientos/urgencias-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/landing-implantes-majadahonda.html"
+  to = "/landings/implantes-majadahonda"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/implantes-majadahonda"
+  to = "/landings/implantes-majadahonda"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/implantes-majadahonda/"
+  to = "/landings/implantes-majadahonda"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/caries-ninos-prevencion.html"
+  to = "/blog/caries-ninos-prevencion"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/como-blanquear-los-dientes.html"
+  to = "/blog/como-blanquear-los-dientes"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/cuanto-cuesta-un-implante-dental.html"
+  to = "/blog/cuanto-cuesta-un-implante-dental"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/cuanto-dura-un-implante-dental.html"
+  to = "/blog/cuanto-dura-un-implante-dental"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/duele-ponerse-implantes-dentales.html"
+  to = "/blog/duele-ponerse-implantes-dentales"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/flemon-dental-que-hacer.html"
+  to = "/blog/flemon-dental-que-hacer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/invisalign-precio-tiempo-tratamiento.html"
+  to = "/blog/invisalign-precio-tiempo-tratamiento"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/que-es-la-periodontitis.html"
+  to = "/blog/que-es-la-periodontitis"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/que-hacer-despues-de-una-extraccion.html"
+  to = "/blog/que-hacer-despues-de-una-extraccion"
+  status = 301
+  force = true

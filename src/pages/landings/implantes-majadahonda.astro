@@ -1,0 +1,70 @@
+---
+// Landing de Google Ads — Implantes Majadahonda. Contenido migrado de
+// landing-implantes-majadahonda.html (ofertas confirmadas para esta sede).
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import ImplantLanding from '../../components/landing/ImplantLanding.astro';
+import { getClinic } from '../../data/clinics';
+import { faqSchema } from '../../data/schema';
+
+const clinic = getClinic('majadahonda');
+const waText = 'Hola, me gustaría pedir una valoración de implantes dentales en Majadahonda.';
+
+const faqs = [
+  { q: '¿Duele ponerse un implante dental?', a: 'No. La colocación se hace con anestesia local y, si lo necesitas, sedación consciente: no sentirás dolor durante la intervención, solo algo de presión. La mayoría de pacientes retoma su rutina al día siguiente, con medicación e indicaciones para un postoperatorio cómodo.' },
+  { q: '¿Cuánto tiempo tardaré en tener mi diente?', a: 'Varía según el caso. Tras colocar el implante, el hueso necesita unos meses para integrarlo antes de la corona definitiva; en casos seleccionados es posible la carga inmediata. En tu primera visita en Majadahonda te damos un calendario personalizado.' },
+  { q: '¿Cuánto cuesta? ¿Puedo financiarlo?', a: 'Tras la valoración gratuita te entregamos un presupuesto cerrado, sin sorpresas, y disponemos de financiación para fraccionar el tratamiento en cuotas cómodas. Buscamos la fórmula de pago que mejor se adapte a ti.' },
+  { q: 'Llevo tiempo sin el diente, ¿soy candidato?', a: 'Generalmente sí. Aunque haya pasado tiempo y exista algo de reabsorción de hueso, contamos con técnicas de regeneración ósea para recuperar el volumen necesario. Lo confirmamos con un estudio radiológico 3D antes de planificar tu tratamiento.' },
+  { q: '¿Tienen garantía los implantes?', a: 'Sí. Usamos implantes de primeras marcas con garantía del fabricante y respondemos del trabajo realizado en clínica. Te detallamos las condiciones de la garantía en tu primera valoración.' },
+];
+---
+<LandingLayout
+  title="Implantes Dentales en Majadahonda | Clínica Dr. Baos"
+  description="Implantes dentales en Majadahonda (Madrid): recupera tu diente para siempre, sin dañar los de al lado y sin dolor. 1ª valoración + escáner 3D gratis y financiación a tu medida. Pide cita por WhatsApp."
+  ogImage="/assets/images/tratamientos/implantes.avif"
+  schema={faqSchema(faqs)}
+  noindex
+  clinic={clinic}
+  waText={waText}
+>
+  <ImplantLanding
+    clinic={clinic}
+    waText={waText}
+    h1="Vuelve a morder y sonreír sin preocuparte por tus dientes"
+    intro="Implantes en Majadahonda sin dolor, con sedación consciente si la necesitas. Presupuesto cerrado y financiación a tu medida para que vuelvas a comer cuanto antes."
+    highlights={[
+      '1ª valoración + escáner 3D gratis y sin compromiso',
+      'Resultado natural: no se nota que es un implante',
+      'Garantía de 7 años por escrito',
+    ]}
+    formHeading="Pide tu valoración gratuita"
+    formSub="Incluye escáner 3D. Sin coste ni compromiso."
+    submitLabel="Reservar mi valoración gratis"
+    benefits={[
+      { title: 'Masticas al 100%', body: 'Come lo que quieras —de una manzana a un filete— con la misma fuerza que con tu diente natural.' },
+      { title: 'Sonríes sin complejos', body: 'Resultado tan natural que ni tú notas la diferencia. Recupera la confianza en cada foto.' },
+      { title: 'Solución para toda la vida', body: 'Fijo, sin dentaduras que se mueven. Bien cuidado, dura muchísimos años.' },
+      { title: 'Sin dolor y sin miedo', body: 'Anestesia local y sedación consciente si la necesitas. La mayoría retoma su vida al día siguiente.' },
+    ]}
+    painPoints={[
+      { title: 'Evitas ciertos alimentos', body: 'Dejas de lado lo que te gusta porque no puedes masticarlo bien o te da miedo.' },
+      { title: 'Te tapas la boca al reír', body: 'El hueco te da vergüenza y evitas fotos, reuniones o sonreír con naturalidad.' },
+      { title: 'Tu dentadura se mueve', body: 'Estás cansado/a de la removible que baila, molesta o se sale al comer o hablar.' },
+    ]}
+    differentiators={[
+      'Cirugía guiada 3D: más precisión, menos molestias',
+      'Sedación consciente, para que no pases miedo ni dolor',
+      'Financiación a tu medida',
+      'Garantía de 7 años, por escrito y de primeras marcas',
+      'Presupuesto cerrado, sin sorpresas ni costes ocultos',
+    ]}
+    steps={[
+      { title: 'Valoración con escáner 3D gratis', body: 'Estudiamos tu boca sin coste y te explicamos tu caso con claridad.' },
+      { title: 'Plan y presupuesto cerrado', body: 'Recibes por escrito el tratamiento y el precio, sin letra pequeña.' },
+      { title: 'Colocamos tu implante', body: 'Con cirugía guiada y sedación si la necesitas. Rápido, preciso y sin dolor.' },
+      { title: 'Tu nueva sonrisa', body: 'Corona a medida y revisiones de mantenimiento para que dure años.' },
+    ]}
+    faqs={faqs}
+    ctaHeading="En el centro de Majadahonda"
+    ctaBody="Atendemos a pacientes de Majadahonda, Las Rozas, Pozuelo de Alarcón, Boadilla del Monte y Villanueva de la Cañada."
+  />
+</LandingLayout>

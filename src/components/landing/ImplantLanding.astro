@@ -1,0 +1,185 @@
+---
+// Plantilla de landing de implantes para Google Ads (una por clínica).
+// Las ofertas comerciales (garantía, escáner gratis, sedación…) son por clínica:
+// solo se muestran las que se pasan en `offers`, para no prometer lo que una sede no ofrece.
+import LandingForm from '../forms/LandingForm.astro';
+import NumberedList from '../ui/NumberedList.astro';
+import Faq from '../ui/Faq.astro';
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { telHref, waUrl, type Clinic } from '../../data/clinics';
+import type { Faq as FaqItem } from '../../data/schema';
+
+interface Props {
+  clinic: Clinic;
+  waText: string;
+  h1: string;
+  intro: string;
+  /** 3 puntos de la cabecera */
+  highlights: string[];
+  formHeading: string;
+  formSub?: string;
+  submitLabel: string;
+  benefits: { title: string; body: string }[];
+  painPoints: { title: string; body: string }[];
+  differentiators: string[];
+  steps: { title: string; body: string }[];
+  faqs: FaqItem[];
+  ctaHeading: string;
+  ctaBody: string;
+}
+const p = Astro.props;
+const c = p.clinic;
+---
+<section class="lp-hero">
+  <div class="container lp-hero-grid">
+    <div class="lp-hero-text">
+      <span class="eyebrow">Implantes dentales · {c.name}</span>
+      <h1 class="lp-title">{p.h1}</h1>
+      <p class="lp-intro">{p.intro}</p>
+      <ul class="lp-highlights">
+        {p.highlights.map((h) => <li>{h}</li>)}
+      </ul>
+      <div class="lp-actions">
+        <a href={telHref(c.phone[0])} class="btn btn-gold" data-lead-source="landing_llamada">Llamar al {c.phone[0]}</a>
+        <a href={waUrl(c, p.waText)} class="btn btn-outline-light" target="_blank" rel="noopener" data-lead-source="landing_whatsapp">
+          <WhatsAppIcon size={15} /> Escribir por WhatsApp
+        </a>
+      </div>
+      <p class="lp-rating">★★★★★ {c.rating.score} · {c.rating.count} reseñas en Google</p>
+    </div>
+    <div class="lp-hero-form" id="valoracion">
+      <LandingForm clinic={c} treatment="Implantes dentales" heading={p.formHeading} subheading={p.formSub} submitLabel={p.submitLabel} />
+    </div>
+  </div>
+</section>
+
+<section class="section section--cream">
+  <div class="container">
+    <header class="block-header">
+      <span class="eyebrow">Por qué un implante</span>
+      <h2 class="h2">Lo que ganas al ponerte un implante</h2>
+      <p class="lead">No es un diente más: es volver a comer, hablar y reír como antes.</p>
+    </header>
+    <NumberedList items={p.benefits} />
+  </div>
+</section>
+
+<section class="section section--black">
+  <div class="container">
+    <header class="block-header">
+      <span class="eyebrow">¿Te reconoces?</span>
+      <h2 class="h2">Si te pasa esto, el implante es para ti</h2>
+    </header>
+    <NumberedList items={p.painPoints} tone="dark" columns={3} />
+  </div>
+</section>
+
+<section class="section section--white">
+  <div class="container lp-diff">
+    <div>
+      <span class="eyebrow">Por qué en Dr. Baos</span>
+      <h2 class="h2">Lo que nos hace diferentes</h2>
+      <ul class="lp-diff-list">
+        {p.differentiators.map((d) => <li>{d}</li>)}
+      </ul>
+    </div>
+    <div class="lp-diff-cta">
+      <h3 class="lp-diff-title">Descubre tu caso concreto</h3>
+      <p>Reserva tu valoración y sal sabiendo exactamente qué necesitas y cuánto cuesta.</p>
+      <div class="lp-diff-actions">
+        <a href="#valoracion" class="btn btn-gold">Pedir mi valoración</a>
+        <a href={telHref(c.phone[0])} class="btn btn-outline-dark" data-lead-source="landing_llamada">Llamar al {c.phone[0]}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--cream">
+  <div class="container">
+    <header class="block-header">
+      <span class="eyebrow">Cómo funciona</span>
+      <h2 class="h2">De la primera visita a tu nueva sonrisa</h2>
+      <p class="lead">Un proceso claro, sin sorpresas.</p>
+    </header>
+    <NumberedList items={p.steps} />
+  </div>
+</section>
+
+<Faq faqs={p.faqs} heading="Resolvemos tus dudas sobre los implantes" />
+
+<section class="section section--black lp-where">
+  <div class="container lp-where-grid">
+    <div>
+      <span class="eyebrow">Dónde estamos</span>
+      <h2 class="h2">{p.ctaHeading}</h2>
+      <p class="lead">{p.ctaBody}</p>
+    </div>
+    <div class="lp-where-data">
+      <p>{c.address}</p>
+      <p>{c.hours}</p>
+      <div class="lp-actions">
+        <a href={telHref(c.phone[0])} class="btn btn-gold" data-lead-source="landing_llamada">Llamar ahora</a>
+        <a href={waUrl(c, p.waText)} class="btn btn-outline-light" target="_blank" rel="noopener" data-lead-source="landing_whatsapp"><WhatsAppIcon size={15} /> WhatsApp</a>
+        <a href={c.mapsUrl} class="btn btn-outline-light" target="_blank" rel="noopener">Cómo llegar</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .lp-hero {
+    background: var(--black);
+    color: var(--on-dark);
+    padding-block: 36px 48px;
+  }
+  .lp-hero-grid { display: grid; grid-template-columns: 1fr; gap: 36px; }
+  .lp-hero .eyebrow { color: var(--gold); }
+  .lp-title {
+    font-size: clamp(34px, 4.4vw + 14px, 60px);
+    line-height: 1.04;
+    letter-spacing: -1px;
+    color: var(--on-dark);
+  }
+  .lp-intro { margin-top: 18px; font-size: 16px; line-height: 1.7; color: rgba(240,237,230,.7); max-width: 540px; }
+  .lp-highlights { margin-top: 22px; border-top: 1px solid var(--border-dark); }
+  .lp-highlights li {
+    position: relative;
+    padding: 12px 0 12px 26px;
+    border-bottom: 1px solid var(--border-dark);
+    font-size: 15px;
+    color: var(--on-dark);
+  }
+  .lp-highlights li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+  .lp-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .lp-rating { margin-top: 18px; font-size: 13px; color: rgba(240,237,230,.6); }
+
+  .lp-diff { display: grid; grid-template-columns: 1fr; gap: 40px; }
+  .lp-diff .eyebrow { color: var(--muted-light); }
+  .lp-diff-list { margin-top: 24px; border-top: 1px solid var(--border-light); }
+  .lp-diff-list li {
+    position: relative;
+    padding: 14px 0 14px 26px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 15px;
+  }
+  .lp-diff-list li::before { content: '—'; position: absolute; left: 0; color: var(--gold-ink); }
+  .lp-diff-cta { background: var(--cream); padding: 28px 22px; align-self: start; }
+  .lp-diff-title { font-size: 24px; letter-spacing: -.3px; }
+  .lp-diff-cta p { margin-top: 10px; font-size: 15px; color: var(--muted-light); line-height: 1.65; }
+  .lp-diff-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+
+  .lp-where-grid { display: grid; grid-template-columns: 1fr; gap: 28px; }
+  .lp-where .lead { margin-top: 14px; }
+  .lp-where-data p { font-size: 15px; color: rgba(240,237,230,.75); line-height: 1.7; }
+
+  @media (min-width: 480px) {
+    .lp-actions, .lp-diff-actions { flex-direction: row; flex-wrap: wrap; }
+  }
+  @media (min-width: 900px) {
+    .lp-hero { padding-block: 64px 88px; }
+    .lp-hero-grid { grid-template-columns: 1.15fr .85fr; gap: clamp(40px, 5vw, 72px); align-items: start; }
+    .lp-diff { grid-template-columns: 1.2fr .8fr; gap: clamp(48px, 6vw, 80px); }
+    .lp-diff-cta { padding: 36px; }
+    .lp-where-grid { grid-template-columns: 1.2fr .8fr; gap: 64px; align-items: end; }
+  }
+</style>

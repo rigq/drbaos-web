@@ -1,0 +1,80 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import TreatmentRow from '../../components/ui/TreatmentRow.astro';
+import NumberedList from '../../components/ui/NumberedList.astro';
+import ContactoSection from '../../components/sections/ContactoSection.astro';
+import { treatments } from '../../data/treatments';
+import { breadcrumbSchema } from '../../data/schema';
+
+// Servicios sin página propia (contenido del sitio anterior, tratamientos.html)
+const services = [
+  {
+    title: 'Odontología general',
+    body: 'La base de toda salud bucodental. Un seguimiento regular previene problemas mayores, preserva tu estética natural y te ahorra tratamientos complejos.',
+    items: ['Revisión clínica completa con diagnóstico', 'Limpieza dental profesional (tartrectomía ultrasónica)', 'Obturaciones estéticas (empastes)', 'Tratamiento de caries en todas sus fases', 'Revisión + limpieza una vez al año; cada 6 meses con tratamiento activo'],
+  },
+  {
+    title: 'Ortodoncia con brackets',
+    body: 'Corregimos la posición de los dientes y la mordida con opciones para todas las edades, además de la ortodoncia invisible.',
+    items: ['Brackets metálicos (tratamiento clásico y eficaz)', 'Brackets estéticos (cerámica o zafiro)', 'Ortodoncia infantil y adolescente (interceptiva)'],
+  },
+  {
+    title: 'Prótesis dental',
+    body: 'Recupera función, estética y calidad de vida con prótesis modernas, cómodas y personalizadas, hechas con laboratorios de primer nivel.',
+    items: ['Coronas unitarias (cerámica, zirconio)', 'Puentes fijos', 'Prótesis removibles parciales y completas', 'Prótesis sobre implantes (fijas o removibles)'],
+  },
+  {
+    title: 'Radiología digital',
+    body: 'Diagnóstico preciso con la menor radiación posible. Ves la imagen al instante en pantalla y queda guardada en tu historia clínica.',
+    items: ['Ortopantomografía (panorámica)', 'Radiografías periapicales y de aleta mordida', 'Estudio de implantes y cirugías'],
+  },
+];
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Tratamientos', url: '/tratamientos' },
+];
+---
+<PageLayout
+  title="Tratamientos Dentales | Clínica Dental Dr. Baos"
+  description="Todos los tratamientos dentales de la Clínica Dental Dr. Baos: estética, ortodoncia, implantes, endodoncia, periodoncia, odontopediatría y más, en Argés (Toledo) y Majadahonda (Madrid)."
+  schema={breadcrumbSchema(crumbs)}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Nuestros Servicios"
+    title="Tratamientos para cada sonrisa"
+    intro="Desde la revisión más sencilla hasta los tratamientos más avanzados, siempre con el trato cercano que nos caracteriza. Todos están disponibles en nuestras dos clínicas."
+  />
+
+  <section class="section section--black list-section">
+    <div class="container">
+      <ul class="tratamientos-list">
+        {treatments.map((t) => <TreatmentRow treatment={t} />)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--cream">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Además</span>
+        <h2 class="h2">Odontología general y diagnóstico</h2>
+        <p class="lead">Servicios que forman parte de cualquier tratamiento y que también realizamos de forma independiente.</p>
+      </header>
+      <NumberedList items={services} />
+    </div>
+  </section>
+
+  <ContactoSection
+    eyebrow="Pide tu cita"
+    heading="¿No sabes qué tratamiento necesitas?"
+    intro="Nos cuentas qué te preocupa y te orientamos sin compromiso. La primera visita es informativa y gratuita. ¿Tienes dolor? Consulta nuestras urgencias dentales."
+  />
+</PageLayout>
+
+<style>
+  .list-section { padding-top: 0; }
+  .tratamientos-list { border-top: 1px solid var(--border-dark); }
+</style>

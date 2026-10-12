@@ -1,0 +1,126 @@
+---
+// Layout de landing de Google Ads: sin menú completo (un único objetivo: contactar),
+// cabecera mínima con llamada, barra fija inferior en móvil y pie legal.
+import Base, { type Props as BaseProps } from './Base.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import { telHref, waUrl, type Clinic } from '../data/clinics';
+
+export type Props = BaseProps & { clinic: Clinic; waText: string };
+const { clinic, waText, ...base } = Astro.props;
+const year = new Date().getFullYear();
+---
+<Base {...base}>
+  <header class="lp-header">
+    <div class="container lp-header-inner">
+      <a href="/" class="lp-logo" aria-label="Clínica Dental Dr. Baos — Inicio">
+        <img src="/assets/images/brand/logo-db.png" alt="Clínica Dental Dr. Baos" width="439" height="235" />
+      </a>
+      <a href={telHref(clinic.phone[0])} class="lp-call" data-lead-source="landing_llamada">
+        <span class="lp-call-label">Llámanos</span>
+        <span class="lp-call-num">{clinic.phone[0]}</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <slot />
+  </main>
+
+  <footer class="lp-footer">
+    <div class="container lp-footer-inner">
+      <span>© {year} Clínica Dental Dr. Baos · {clinic.address}</span>
+      <ul>
+        <li><a href="/aviso-legal">Aviso legal</a></li>
+        <li><a href="/politica-privacidad">Privacidad</a></li>
+        <li><a href="/politica-cookies">Cookies</a></li>
+        <li><button type="button" data-open-cookie-prefs>Preferencias de cookies</button></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Barra fija de contacto en móvil -->
+  <div class="lp-bar">
+    <a href={telHref(clinic.phone[0])} class="lp-bar-btn lp-bar-call" data-lead-source="landing_llamada">Llamar</a>
+    <a href={waUrl(clinic, waText)} class="lp-bar-btn lp-bar-wa" target="_blank" rel="noopener" data-lead-source="landing_whatsapp">
+      <WhatsAppIcon size={18} /> WhatsApp
+    </a>
+  </div>
+</Base>
+
+<style>
+  .lp-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--black);
+    border-bottom: 1px solid var(--border-dark);
+  }
+  .lp-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--nav-h);
+  }
+  .lp-logo img { height: 30px; width: auto; filter: brightness(0) invert(1); }
+  .lp-call {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: var(--tap);
+    line-height: 1.2;
+  }
+  .lp-call-label { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--muted-dark); }
+  .lp-call-num { font-size: 16px; font-weight: 600; color: var(--gold); }
+
+  main { padding-bottom: 72px; }
+
+  .lp-footer {
+    background: var(--black);
+    color: var(--muted-dark);
+    border-top: 1px solid var(--border-dark);
+    padding-block: 28px;
+    font-size: 12px;
+  }
+  .lp-footer-inner { display: flex; flex-direction: column; gap: 8px; }
+  .lp-footer ul { display: flex; flex-wrap: wrap; column-gap: 20px; }
+  .lp-footer a, .lp-footer button {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-size: 12px;
+    color: var(--muted-dark);
+  }
+  .lp-footer a:hover, .lp-footer button:hover { color: var(--on-dark); }
+
+  .lp-bar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 90;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--black);
+    border-top: 1px solid rgba(240,237,230,.14);
+  }
+  .lp-bar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    border-radius: 3px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .lp-bar-call { border: 1px solid rgba(240,237,230,.35); color: var(--on-dark); }
+  .lp-bar-wa { background: #25D366; color: var(--white); }
+
+  @media (min-width: 900px) {
+    .lp-logo img { height: 34px; }
+    .lp-bar { display: none; }
+    main { padding-bottom: 0; }
+    .lp-footer-inner { flex-direction: row; align-items: center; justify-content: space-between; }
+  }
+</style>
