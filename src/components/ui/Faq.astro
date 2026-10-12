@@ -1,0 +1,96 @@
+---
+// Preguntas frecuentes con <details> nativo (accesible, sin JS).
+// El JSON-LD FAQPage lo añade la página con faqSchema().
+import type { Faq } from '../../data/schema';
+
+interface Props {
+  faqs: Faq[];
+  eyebrow?: string;
+  heading: string;
+  intro?: string;
+  tone?: 'white' | 'cream';
+}
+const { faqs, eyebrow = 'Dudas frecuentes', heading, intro, tone = 'white' } = Astro.props;
+---
+<section class:list={['section', `section--${tone}`, 'faq']} id="faq">
+  <div class="container faq-grid">
+    <header class="faq-header">
+      <span class="eyebrow">{eyebrow}</span>
+      <h2 class="h2">{heading}</h2>
+      {intro && <p class="lead">{intro}</p>}
+    </header>
+    <div class="faq-list">
+      {faqs.map((f, i) => (
+        <details class="faq-item" open={i === 0}>
+          <summary>
+            <span class="faq-q">{f.q}</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </summary>
+          <p class="faq-a">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .faq-header .eyebrow { color: var(--muted-light); }
+  .faq-header .lead { margin-top: 14px; max-width: 420px; }
+
+  .faq-list { border-top: 1px solid var(--border-light); }
+  .faq-item { border-bottom: 1px solid var(--border-light); }
+  .faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 64px;
+    padding-block: 18px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-q {
+    font-family: var(--font-serif);
+    font-size: clamp(18px, .6vw + 15px, 21px);
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--black);
+  }
+  .faq-icon {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  .faq-icon::before,
+  .faq-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 14px;
+    height: 1.5px;
+    background: var(--black);
+    transition: transform .25s var(--ease);
+  }
+  .faq-icon::after { transform: rotate(90deg); }
+  .faq-item[open] .faq-icon::after { transform: rotate(0deg); }
+  .faq-a {
+    padding-bottom: 22px;
+    max-width: 680px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted-light);
+  }
+
+  @media (min-width: 900px) {
+    .faq-grid { grid-template-columns: 1fr 1.6fr; gap: clamp(48px, 6vw, 96px); }
+    .faq-header { position: sticky; top: calc(var(--nav-h) + 32px); align-self: start; }
+  }
+</style>

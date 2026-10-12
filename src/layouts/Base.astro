@@ -1,5 +1,9 @@
 ---
 import '../styles/global.css';
+import Analytics from '../components/seo/Analytics.astro';
+import LeadTracking from '../components/seo/LeadTracking.astro';
+import SchemaOrg from '../components/seo/SchemaOrg.astro';
+import ConsentBanner from '../components/ui/ConsentBanner.astro';
 
 export interface Props {
   title: string;
@@ -10,6 +14,8 @@ export interface Props {
   ogImage?: string;
   ogType?: 'website' | 'article';
   noindex?: boolean;
+  /** Bloques JSON-LD específicos de la página */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -19,6 +25,7 @@ const {
   ogImage = '/assets/images/brand/android-chrome-512x512.png',
   ogType = 'website',
   noindex = false,
+  schema,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://clinicadentaldrbaos.com');
@@ -29,6 +36,7 @@ const ogImageUrl = new URL(ogImage, site).href;
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <Analytics />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
@@ -53,9 +61,12 @@ const ogImageUrl = new URL(ogImage, site).href;
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
+  {schema && <SchemaOrg data={schema} />}
   <slot name="head" />
 </head>
 <body>
   <slot />
+  <ConsentBanner />
+  <LeadTracking />
 </body>
 </html>

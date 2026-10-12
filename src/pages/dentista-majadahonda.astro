@@ -1,0 +1,163 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import ClinicVisit from '../components/ui/ClinicVisit.astro';
+import TeamGrid from '../components/ui/TeamGrid.astro';
+import NumberedList from '../components/ui/NumberedList.astro';
+import Faq from '../components/ui/Faq.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import TratamientosSection from '../components/sections/TratamientosSection.astro';
+import ContactoSection from '../components/sections/ContactoSection.astro';
+import { getClinic, telHref, waUrl } from '../data/clinics';
+import { teamFor } from '../data/team';
+import { clinicSchema, faqSchema, breadcrumbSchema, type Faq as FaqItem } from '../data/schema';
+
+const clinic = getClinic('majadahonda');
+
+const reasons = [
+  { title: 'Atención personalizada', body: 'Aquí no eres «un número más». Te conocemos por tu nombre, escuchamos lo que necesitas y diseñamos un plan de tratamiento pensado solo para ti.' },
+  { title: 'Dos sedes, el mismo equipo', body: 'Argés (Toledo) y Majadahonda (Madrid) comparten los mismos especialistas y el mismo estándar de calidad. La misma confianza, estés donde estés.' },
+  { title: 'Valoración sin compromiso', body: 'Tu primera valoración y el presupuesto por escrito son gratuitos y sin ningún compromiso. Decides con calma y con toda la información sobre la mesa.' },
+  { title: 'Financiación a tu medida', body: 'Fraccionamos tu tratamiento en cuotas cómodas y adaptadas a ti, para que el presupuesto nunca sea el motivo por el que renuncies a tu salud dental.' },
+  { title: 'Especialistas por tratamiento', body: 'Un equipo multidisciplinar en el que cada área —ortodoncia, implantes, encías, endodoncia, cirugía— la lleva un profesional dedicado a ella.' },
+  { title: 'Tecnología actualizada', body: 'Diagnóstico con radiología digital 3D y cirugía guiada, para tratamientos más precisos, seguros y cómodos, con menos molestias para ti.' },
+];
+
+const faqs: FaqItem[] = [
+  {
+    q: '¿Dónde está la clínica dental Dr. Baos en Majadahonda?',
+    a: 'Estamos en C. de San Joaquín, 5, 28220 Majadahonda (Madrid), en una zona céntrica y de fácil acceso. Atendemos a pacientes de Majadahonda y de municipios cercanos como Las Rozas, Pozuelo de Alarcón, Boadilla del Monte y Villanueva de la Cañada.',
+  },
+  {
+    q: '¿Cuál es el horario de la clínica de Majadahonda?',
+    a: 'Abrimos de lunes a jueves de 9:00 a 13:00 y de 15:00 a 19:00, y los viernes de 9:00 a 14:00. Sábados y domingos permanecemos cerrados. Puedes pedir tu cita por WhatsApp en el 614 05 56 29.',
+  },
+  {
+    q: '¿Qué tratamientos dentales ofrecéis en Majadahonda?',
+    a: 'En Majadahonda ofrecemos la cartera completa: estética dental, ortodoncia (incluida la invisible, con sistemas como Invisalign), implantes dentales, endodoncia, periodoncia, odontopediatría, cirugía oral, prótesis y odontología general, con los mismos especialistas y la misma calidad que en nuestra clínica de Argés (Toledo).',
+  },
+  {
+    q: '¿Cómo pido cita en la clínica dental de Majadahonda?',
+    a: 'Puedes escribirnos por WhatsApp al 614 05 56 29, rellenar el formulario de esta página o llamarnos por teléfono. Te confirmamos la cita en el horario que mejor te venga y sin listas de espera.',
+  },
+  {
+    q: '¿Atendéis urgencias dentales en Majadahonda?',
+    a: 'Sí. Si tienes dolor o una urgencia dental, contáctanos cuanto antes por WhatsApp o teléfono y te daremos cita prioritaria el mismo día siempre que sea posible.',
+  },
+];
+
+const gallery = [
+  { src: '/assets/images/majadahonda/inaguracion1.jpeg', alt: 'Inauguración de la clínica dental Dr. Baos en Majadahonda' },
+  { src: '/assets/images/majadahonda/albanydaniela.avif', alt: 'Nuestras doctoras en la inauguración de Majadahonda' },
+  { src: '/assets/images/majadahonda/inaguracion2.avif', alt: 'Apertura de la clínica Dr. Baos en Majadahonda, Madrid' },
+  { src: '/assets/images/majadahonda/inaguracion3.jpeg', alt: 'Celebración de la inauguración en Majadahonda' },
+  { src: '/assets/images/majadahonda/inaguracion4.jpeg', alt: 'Pacientes y amigos en la apertura de Majadahonda' },
+  { src: '/assets/images/majadahonda/inaguracion0.jpeg', alt: 'Equipo Dr. Baos en la inauguración de Majadahonda' },
+  { src: '/assets/images/majadahonda/inaguracion5.avif', alt: 'Detalles de la nueva clínica dental en Majadahonda' },
+  { src: '/assets/images/majadahonda/inaguracion6.jpeg', alt: 'Brindis de inauguración en la clínica de Majadahonda' },
+];
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Clínica de Majadahonda', url: '/dentista-majadahonda' },
+];
+
+const schema = [
+  clinicSchema(clinic, 'Tu dentista en Majadahonda, Madrid. Clínica dental de vanguardia: estética dental, ortodoncia, implantes dentales, endodoncia, periodoncia, odontopediatría, cirugía oral y prótesis dental.'),
+  faqSchema(faqs),
+  breadcrumbSchema(crumbs),
+];
+---
+<PageLayout
+  title="Clínica Dental en Majadahonda | Dentista Dr. Baos"
+  description="Nueva clínica dental en Majadahonda (Madrid). El equipo especialista de Dr. Baos, ahora más cerca de ti y sin listas de espera. Primera visita y presupuesto sin compromiso. Pide tu cita por WhatsApp."
+  ogImage={clinic.image}
+  schema={schema}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Nueva Apertura · Majadahonda, Madrid"
+    title="Dentista en Majadahonda sin listas de espera"
+    intro="La misma odontología de vanguardia que nos caracteriza, ahora como tu clínica dental en Majadahonda. Un equipo de especialistas te atiende sin listas de espera, con el trato cercano de siempre y una primera valoración sin compromiso."
+    image={{ src: clinic.image, alt: 'Fachada de la Clínica Dental Dr. Baos en Majadahonda', width: 1200, height: 905 }}
+    note={`★★★★★ ${clinic.rating.score} · ${clinic.rating.count} reseñas en Google`}
+  >
+    <a href={waUrl(clinic, 'Hola, me gustaría pedir una valoración en Majadahonda.')} class="btn btn-gold" target="_blank" rel="noopener">
+      <WhatsAppIcon size={15} /> Pedir valoración por WhatsApp
+    </a>
+    <a href={telHref(clinic.phone[0])} class="btn btn-outline-light">Llamar al {clinic.phone[0]}</a>
+  </PageHero>
+
+  <ClinicVisit clinic={clinic} />
+
+  <section class="section section--cream">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Profesionales</span>
+        <h2 class="h2">Equipo de la clínica de Majadahonda</h2>
+        <p class="lead">Especialistas comprometidos con tu salud.</p>
+      </header>
+      <TeamGrid members={teamFor('majadahonda')} altSuffix="en la clínica dental de Majadahonda" />
+    </div>
+  </section>
+
+  <TratamientosSection
+    eyebrow="Nuestros Servicios"
+    heading="Tratamientos en Majadahonda"
+    intro="Ofrecemos en Majadahonda la misma cartera completa de tratamientos que en nuestra clínica de Argés."
+    showAllLink
+  />
+
+  <section class="section section--white">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Por qué nos eligen</span>
+        <h2 class="h2">¿Por qué elegir Clínica Dental Dr. Baos?</h2>
+        <p class="lead">Lo que nos diferencia de otras clínicas dentales de Majadahonda: cercanía real, especialistas por tratamiento y transparencia de principio a fin.</p>
+      </header>
+      <NumberedList items={reasons} />
+    </div>
+  </section>
+
+  <section class="section section--cream inauguracion">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Así fue</span>
+        <h2 class="h2">El día de nuestra inauguración</h2>
+        <p class="lead">Abrimos las puertas de nuestra nueva clínica dental en Majadahonda rodeados de pacientes, amigos y mucha ilusión. ¡Gracias a todos por acompañarnos en un día tan especial!</p>
+      </header>
+      <div class="gallery">
+        {gallery.map((g) => (
+          <figure class="gallery-item">
+            <img src={g.src} alt={g.alt} width="800" height="800" loading="lazy" decoding="async" />
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Faq faqs={faqs} heading="Preguntas sobre tu clínica dental en Majadahonda" intro="Resolvemos las dudas más habituales sobre nuestra clínica dental en Majadahonda." />
+
+  <ContactoSection
+    only="majadahonda"
+    eyebrow="Pide tu valoración en Majadahonda"
+    heading="Estamos a un mensaje de distancia"
+    intro="Rellena el formulario y te contactamos por WhatsApp para confirmar tu valoración en la clínica dental de Majadahonda en el horario que mejor te venga. ¿Estás en Toledo? Visita a tu dentista en Argés."
+  />
+</PageLayout>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .gallery-item { overflow: hidden; aspect-ratio: 1; background: var(--border-light); }
+  .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+  .gallery-item:first-child { grid-column: span 2; aspect-ratio: 16 / 10; }
+
+  @media (min-width: 900px) {
+    .gallery { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .gallery-item:first-child { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+  }
+</style>

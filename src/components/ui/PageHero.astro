@@ -1,0 +1,118 @@
+---
+// Cabecera de página interior: fondo negro, migas, eyebrow, H1, entradilla,
+// acciones (slot) y foto opcional a la derecha. Mobile-first.
+interface Crumb { name: string; url: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  crumbs?: Crumb[];
+  image?: { src: string; alt: string; width: number; height: number };
+  /** Línea de texto pequeña bajo las acciones (valoración, datos) */
+  note?: string;
+}
+const { eyebrow, title, intro, crumbs, image, note } = Astro.props;
+---
+<section class:list={['page-hero', image && 'page-hero--image']}>
+  <div class="container page-hero-inner">
+    <div class="page-hero-text">
+      {crumbs && crumbs.length > 0 && (
+        <nav class="crumbs" aria-label="Ruta de navegación">
+          <ol>
+            {crumbs.map((c, i) => (
+              <li>
+                {i < crumbs.length - 1
+                  ? <a href={c.url}>{c.name}</a>
+                  : <span aria-current="page">{c.name}</span>}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      {eyebrow && <span class="eyebrow page-hero-eyebrow">{eyebrow}</span>}
+      <h1 class="page-hero-title">{title}</h1>
+      {intro && <p class="page-hero-intro">{intro}</p>}
+      {Astro.slots.has('default') && <div class="page-hero-actions"><slot /></div>}
+      {note && <p class="page-hero-note">{note}</p>}
+    </div>
+    {image && (
+      <div class="page-hero-media">
+        <img src={image.src} alt={image.alt} width={image.width} height={image.height} fetchpriority="high" decoding="async" />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    background: var(--black);
+    color: var(--on-dark);
+    padding-block: 40px 56px;
+  }
+  .page-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+    align-items: center;
+  }
+
+  .crumbs { margin-bottom: 28px; }
+  .crumbs ol { display: flex; flex-wrap: wrap; align-items: center; }
+  .crumbs li { display: flex; align-items: center; font-size: 12px; color: var(--muted-dark); }
+  .crumbs li + li::before { content: '/'; margin-inline: 10px; opacity: .5; }
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    color: rgba(240,237,230,.7);
+    transition: color .2s;
+  }
+  .crumbs a:hover { color: var(--on-dark); }
+  .crumbs [aria-current] { color: var(--on-dark); }
+
+  .page-hero-eyebrow { color: var(--gold); }
+  .page-hero-title {
+    font-size: clamp(36px, 4.6vw + 14px, 64px);
+    line-height: 1.04;
+    letter-spacing: -1px;
+    color: var(--on-dark);
+    max-width: 16ch;
+  }
+  .page-hero-intro {
+    margin-top: 20px;
+    max-width: 560px;
+    font-size: clamp(15px, .4vw + 14px, 17px);
+    line-height: 1.7;
+    color: rgba(240,237,230,.66);
+  }
+  .page-hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 32px;
+  }
+  .page-hero-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: rgba(240,237,230,.6);
+  }
+
+  .page-hero-media img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  @media (min-width: 480px) {
+    .page-hero-actions { flex-direction: row; flex-wrap: wrap; }
+  }
+
+  @media (min-width: 900px) {
+    .page-hero { padding-block: 56px 96px; }
+    .page-hero--image .page-hero-inner {
+      grid-template-columns: 1.1fr .9fr;
+      gap: clamp(48px, 6vw, 80px);
+    }
+    .page-hero-media img { aspect-ratio: 4 / 5; max-height: 560px; }
+  }
+</style>

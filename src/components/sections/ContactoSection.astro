@@ -1,20 +1,38 @@
 ---
 import ContactForm from '../forms/ContactForm.astro';
 import ClinicDetails from '../ui/ClinicDetails.astro';
-import { clinics } from '../../data/clinics';
+import { clinics, type ClinicId } from '../../data/clinics';
+
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  treatment?: string;
+  /** Mostrar solo una clínica (páginas de clínica) */
+  only?: ClinicId;
+}
+const {
+  eyebrow = 'Pide tu Cita',
+  heading = 'Estamos aquí para ti',
+  intro,
+  treatment,
+  only,
+} = Astro.props;
+const shown = only ? clinics.filter((c) => c.id === only) : clinics;
 ---
 <section class="section section--black contacto" id="contacto">
   <div class="container">
     <header class="contacto-header">
-      <span class="eyebrow">Pide tu Cita</span>
-      <h2 class="h2">Estamos aquí para ti</h2>
+      <span class="eyebrow">{eyebrow}</span>
+      <h2 class="h2">{heading}</h2>
+      {intro && <p class="lead contacto-intro">{intro}</p>}
     </header>
 
     <div class="contacto-grid">
-      <ContactForm />
+      <ContactForm treatment={treatment} clinic={only} />
 
       <div class="clinics-info">
-        {clinics.map((c) => (
+        {shown.map((c) => (
           <div class="clinic-block">
             <span class="clinic-block-tag">{c.tag}</span>
             <h3 class="clinic-block-name">{c.name}</h3>
@@ -31,6 +49,7 @@ import { clinics } from '../../data/clinics';
   .contacto-header { margin-bottom: 40px; }
   .contacto-header .eyebrow { color: var(--gold); }
   .contacto-header .h2 { color: var(--on-dark); }
+  .contacto-intro { max-width: 560px; margin-top: 16px; }
 
   .contacto-grid {
     display: grid;

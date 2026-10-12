@@ -1,9 +1,11 @@
-// Reseñas de Google (texto literal de los pacientes) y valoración agregada.
+// Reseñas de Google: SOLO texto literal de reseñas reales publicadas.
+// No añadir reseñas que no existan en Google (publicidad engañosa en el ámbito sanitario).
+// Para ampliar: copiar el texto exacto desde el perfil de Google Maps de cada clínica.
 
 export const rating = {
   score: '4,9',
   count: 39,
-  googleUrl: 'https://www.google.com/search?q=Clínica+Dental+Dr+Baos',
+  googleUrl: 'https://maps.app.goo.gl/cNQpd3WYr14AdRcL7',
 };
 
 export interface Review {
@@ -19,18 +21,8 @@ export const reviews: Review[] = [
     clinic: 'Argés',
   },
   {
-    text: 'Llevaba tiempo pensando en los implantes y por fin me decidí. El trato del Dr. Baos y su equipo fue excelente desde el primer momento. Muy profesionales, con mucha paciencia para resolver todas mis dudas.',
+    text: 'Muy recomendable, excelente atención y soluciones rápidas y eficaces. Regresé en marzo 2026 y de nuevo excelente. ¡Muy recomendable!',
     author: 'Javier del Puerto Martín',
-    clinic: 'Argés',
-  },
-  {
-    text: 'Empecé la ortodoncia con Invisalign hace unos meses y el cambio es increíble. El equipo de Majadahonda me explicó todo el proceso desde el principio. Muy contenta con el seguimiento y los resultados.',
-    author: 'María José Fernández',
-    clinic: 'Majadahonda',
-  },
-  {
-    text: 'Llevé a mi hijo de 8 años y el trato fue magnífico. La doctora consiguió que se sintiera cómodo desde el principio. Sin llorar, sin dramas. Repetiremos sin duda.',
-    author: 'Pablo García',
     clinic: 'Argés',
   },
 ];

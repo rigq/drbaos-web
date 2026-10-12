@@ -1,0 +1,197 @@
+---
+// Banner y panel de preferencias de cookies (Consent Mode v2).
+// Misma clave de almacenamiento que el sitio anterior ('drbaos_consent') para
+// respetar las elecciones que los visitantes ya hicieron.
+---
+<div class="cc" id="ccBanner" role="dialog" aria-live="polite" aria-label="Aviso de cookies" hidden>
+  <div class="cc-inner">
+    <p class="cc-text">
+      <strong>Usamos cookies</strong> propias y de terceros para analizar el tráfico y medir nuestras campañas.
+      Puedes aceptarlas, rechazarlas o configurarlas. Más información en la <a href="/politica-cookies">política de cookies</a>.
+    </p>
+    <div class="cc-actions">
+      <button type="button" class="cc-link" data-cc="config">Configurar</button>
+      <button type="button" class="btn btn-outline-light" data-cc="reject">Rechazar</button>
+      <button type="button" class="btn btn-gold" data-cc="accept">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<div class="cc-modal" id="ccModal" hidden>
+  <div class="cc-box" role="dialog" aria-modal="true" aria-labelledby="ccTitle">
+    <h2 class="cc-title" id="ccTitle">Preferencias de cookies</h2>
+    <p class="cc-intro">Elige qué cookies quieres permitir. Las necesarias no se pueden desactivar.</p>
+    <label class="cc-row">
+      <span><strong>Necesarias</strong><small>Imprescindibles para el funcionamiento del sitio.</small></span>
+      <input type="checkbox" checked disabled />
+    </label>
+    <label class="cc-row">
+      <span><strong>Analíticas</strong><small>Nos ayudan a entender cómo se usa la web (Google Analytics).</small></span>
+      <input type="checkbox" id="ccAnalytics" />
+    </label>
+    <label class="cc-row">
+      <span><strong>Marketing</strong><small>Para medir y personalizar campañas publicitarias.</small></span>
+      <input type="checkbox" id="ccMarketing" />
+    </label>
+    <div class="cc-modal-actions">
+      <button type="button" class="btn btn-outline-dark" data-cc="save">Guardar preferencias</button>
+      <button type="button" class="btn btn-gold" data-cc="accept">Aceptar todo</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cc {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 150;
+    background: var(--black);
+    color: var(--on-dark);
+    border-top: 1px solid rgba(240,237,230,.14);
+    padding: 18px var(--gutter) calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+  .cc[hidden] { display: none; }
+  .cc-inner {
+    max-width: var(--max);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cc-text { font-size: 13px; line-height: 1.6; color: rgba(240,237,230,.75); }
+  .cc-text strong { color: var(--on-dark); font-weight: 600; }
+  .cc-text a { color: var(--on-dark); text-decoration: underline; text-underline-offset: 3px; }
+  .cc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .cc-actions .btn { flex: 1 1 120px; }
+  .cc-link {
+    min-height: var(--tap);
+    padding-inline: 8px;
+    font-size: 13px;
+    color: rgba(240,237,230,.75);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .cc-link:hover { color: var(--on-dark); }
+
+  .cc-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 160;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(20,18,16,.6);
+    padding: 0;
+  }
+  .cc-modal[hidden] { display: none; }
+  .cc-box {
+    width: 100%;
+    max-width: 520px;
+    max-height: 90dvh;
+    overflow-y: auto;
+    background: var(--cream);
+    padding: 28px var(--gutter) calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  .cc-title { font-size: 24px; margin-bottom: 8px; }
+  .cc-intro { font-size: 14px; color: var(--muted-light); margin-bottom: 16px; }
+  .cc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 14px;
+    border-top: 1px solid var(--border-light);
+    cursor: pointer;
+  }
+  .cc-row span { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
+  .cc-row small { font-size: 12px; color: var(--muted-light); }
+  .cc-row input { width: 22px; height: 22px; accent-color: var(--black); flex-shrink: 0; }
+  .cc-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  @media (min-width: 640px) {
+    .cc-modal { align-items: center; padding: 24px; }
+    .cc-box { padding: 32px; }
+    .cc-modal-actions { flex-direction: row; }
+    .cc-modal-actions .btn { flex: 1; }
+  }
+  @media (min-width: 900px) {
+    .cc-inner { flex-direction: row; align-items: center; justify-content: space-between; gap: 32px; }
+    .cc-actions { flex-shrink: 0; flex-wrap: nowrap; }
+    .cc-actions .btn { flex: 0 0 auto; }
+  }
+</style>
+
+<script>
+  type Consent = { analytics: boolean; marketing: boolean; ts?: number };
+  const KEY = 'drbaos_consent';
+  const w = window as unknown as { dataLayer: unknown[]; __loadGTM?: () => void; openCookiePrefs?: () => void };
+
+  // gtag() de Google: GTM espera el objeto `arguments`, no un array normal.
+  function gtag(..._args: unknown[]) {
+    // eslint-disable-next-line prefer-rest-params
+    (w.dataLayer = w.dataLayer || []).push(arguments);
+  }
+  function consentUpdate(c: Consent) {
+    gtag('consent', 'update', {
+      analytics_storage: c.analytics ? 'granted' : 'denied',
+      ad_storage: c.marketing ? 'granted' : 'denied',
+      ad_user_data: c.marketing ? 'granted' : 'denied',
+      ad_personalization: c.marketing ? 'granted' : 'denied',
+    });
+    if ((c.analytics || c.marketing) && typeof w.__loadGTM === 'function') w.__loadGTM();
+  }
+
+  const read = (): Consent | null => {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; }
+  };
+  const save = (c: Consent) => {
+    try { localStorage.setItem(KEY, JSON.stringify(c)); } catch { /* modo privado */ }
+  };
+
+  const banner = document.getElementById('ccBanner')!;
+  const modal = document.getElementById('ccModal')!;
+  const an = document.getElementById('ccAnalytics') as HTMLInputElement;
+  const mk = document.getElementById('ccMarketing') as HTMLInputElement;
+
+  const closeModal = () => { modal.hidden = true; };
+  const openModal = () => {
+    const c = read();
+    an.checked = !!c?.analytics;
+    mk.checked = !!c?.marketing;
+    modal.hidden = false;
+    an.focus();
+  };
+  const finish = (c: Consent) => {
+    c.ts = Date.now();
+    save(c);
+    consentUpdate(c);
+    banner.hidden = true;
+    closeModal();
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('[data-cc]').forEach((b) => {
+    b.addEventListener('click', () => {
+      const a = b.dataset.cc;
+      if (a === 'accept') finish({ analytics: true, marketing: true });
+      else if (a === 'reject') finish({ analytics: false, marketing: false });
+      else if (a === 'config') openModal();
+      else if (a === 'save') finish({ analytics: an.checked, marketing: mk.checked });
+    });
+  });
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+  // Reabrir desde el footer o la política de cookies
+  w.openCookiePrefs = openModal;
+  document.querySelectorAll('[data-open-cookie-prefs]').forEach((el) => el.addEventListener('click', openModal));
+
+  const stored = read();
+  if (stored) consentUpdate(stored);
+  else banner.hidden = false;
+</script>

@@ -93,6 +93,8 @@ input, select, textarea { font: inherit; font-size: 1rem; }
   }
 }
 
+[hidden] { display: none !important; }
+
 .sr-only {
   position: absolute;
   width: 1px; height: 1px;
@@ -207,3 +209,12 @@ h1, h2, h3, h4 {
 .btn-outline-dark:hover { border-color: var(--black); background: var(--black); color: var(--cream); }
 
 .btn-full { width: 100%; }
+
+/* ── CABECERA DE BLOQUE ──────────────────────────────── */
+.block-header { margin-bottom: 40px; max-width: 720px; }
+.block-header .lead { margin-top: 12px; }
+.section--white .block-header .eyebrow,
+.section--cream .block-header .eyebrow { color: var(--muted-light); }
+.section--black .block-header .eyebrow { color: var(--gold); }
+.section--black .block-header .h2 { color: var(--on-dark); }
+@media (min-width: 900px) { .block-header { margin-bottom: 56px; } }

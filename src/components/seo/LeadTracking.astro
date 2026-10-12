@@ -1,0 +1,34 @@
+---
+// Medición de conversiones vía dataLayer (GTM las reenvía a GA4/Ads solo con consentimiento).
+// Mismos eventos que el sitio anterior para no romper los activadores de GTM:
+//   lead_whatsapp  → clic en cualquier enlace wa.me
+//   lead_call      → clic en cualquier enlace tel:
+// lead_source sale de data-lead-source en el enlace (por defecto 'enlace').
+// El formulario de cita empuja su propio evento (lead_source 'formulario').
+import { clinics } from '../../data/clinics';
+
+const phoneToSede = Object.fromEntries(
+  clinics.flatMap((c) => [
+    [c.whatsapp, c.shortName],
+    ...c.phone.map((p) => [`34${p.replace(/\s+/g, '')}`, c.shortName]),
+  ]),
+);
+---
+<script is:inline define:vars={{ phoneToSede }}>
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var isWa = href.indexOf('https://wa.me/') === 0;
+    var isTel = href.indexOf('tel:') === 0;
+    if (!isWa && !isTel) return;
+    var digits = (isWa ? href.slice(14).split('?')[0] : href.slice(4)).replace(/\D/g, '');
+    if (digits.length === 9) digits = '34' + digits;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: isWa ? 'lead_whatsapp' : 'lead_call',
+      lead_source: a.getAttribute('data-lead-source') || 'enlace',
+      sede: phoneToSede[digits] || ''
+    });
+  }, { capture: true });
+</script>

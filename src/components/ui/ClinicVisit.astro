@@ -1,0 +1,110 @@
+---
+// "Visítanos": dirección, teléfonos, tabla de horario y foto del interior.
+// Sin iframe de Google Maps (carga cookies de terceros antes del consentimiento).
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { telHref, waUrl, type Clinic } from '../../data/clinics';
+
+interface Props {
+  clinic: Clinic;
+  image?: { src: string; alt: string; width: number; height: number };
+}
+const { clinic, image } = Astro.props;
+---
+<section class="section section--white visit" id="visitanos">
+  <div class:list={['container', 'visit-grid', !image && 'visit-grid--solo']}>
+    <div>
+      <span class="eyebrow">Visítanos</span>
+      <h2 class="h2">Nos encontrarás aquí</h2>
+
+      <dl class="visit-data">
+        <div>
+          <dt>Dirección</dt>
+          <dd>{clinic.street}<br />{clinic.postalCode} {clinic.locality}, {clinic.region}</dd>
+        </div>
+        <div>
+          <dt>{clinic.phone.length > 1 ? 'Teléfonos' : 'Teléfono'}</dt>
+          <dd class="visit-phones">{clinic.phone.map((p) => <a href={telHref(p)}>{p}</a>)}</dd>
+        </div>
+        <div>
+          <dt>Horario</dt>
+          <dd>
+            <table class="hours">
+              <tbody>
+                {clinic.hoursTable.map((h) => (
+                  <tr><th scope="row">{h.days}</th><td>{h.time}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="visit-actions">
+        <a href={clinic.mapsUrl} class="btn btn-outline-dark" target="_blank" rel="noopener">Cómo llegar en Google Maps</a>
+        <a href={waUrl(clinic, `Hola, me gustaría pedir cita en ${clinic.shortName}.`)} class="btn btn-gold" target="_blank" rel="noopener">
+          <WhatsAppIcon size={15} /> Pedir cita por WhatsApp
+        </a>
+      </div>
+    </div>
+
+    {image && (
+      <div class="visit-media">
+        <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .visit-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .visit .eyebrow { color: var(--muted-light); }
+
+  .visit-data { margin-top: 28px; border-top: 1px solid var(--border-light); }
+  .visit-data > div {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding-block: 18px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .visit-data dt {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+  }
+  .visit-data dd { font-size: 16px; line-height: 1.6; color: var(--black); }
+  .visit-phones { display: flex; flex-wrap: wrap; column-gap: 20px; }
+  .visit-phones a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 500;
+  }
+
+  .hours { border-collapse: collapse; width: 100%; max-width: 420px; }
+  .hours th, .hours td { padding-block: 4px; font-size: 15px; vertical-align: top; }
+  .hours th { font-weight: 400; color: var(--muted-light); text-align: left; padding-right: 16px; white-space: nowrap; }
+  .hours td { color: var(--black); }
+
+  .visit-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+  .visit-media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+
+  @media (min-width: 480px) {
+    .visit-actions { flex-direction: row; flex-wrap: wrap; }
+  }
+  @media (min-width: 640px) {
+    .visit-data > div { grid-template-columns: 140px 1fr; gap: 20px; }
+  }
+  @media (min-width: 900px) {
+    .visit-grid { grid-template-columns: 1fr 1fr; gap: clamp(48px, 6vw, 80px); }
+    .visit-grid--solo { grid-template-columns: minmax(0, 720px); }
+    .visit-media img { aspect-ratio: 4 / 5; max-height: 600px; }
+  }
+</style>

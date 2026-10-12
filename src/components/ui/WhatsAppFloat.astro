@@ -10,7 +10,7 @@ import { clinics, getClinic, waUrl } from '../../data/clinics';
     <div class="help-menu" id="helpMenu" hidden>
       <p class="help-title">¿Con qué clínica quieres hablar?</p>
       {clinics.map((c) => (
-        <a href={waUrl(c)} class="help-link" target="_blank" rel="noopener">
+        <a href={waUrl(c)} class="help-link" target="_blank" rel="noopener" data-lead-source="boton_flotante">
           <span>{c.name}</span>
           <span class="help-phone">{c.phone[0]}</span>
         </a>
@@ -26,7 +26,7 @@ import { clinics, getClinic, waUrl } from '../../data/clinics';
     >?</button>
   </div>
 
-  <a class="wa-float" href={waUrl(getClinic('arges'))} target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <a class="wa-float" href={waUrl(getClinic('arges'))} target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" data-lead-source="boton_flotante">
     <WhatsAppIcon size={26} />
   </a>
 </div>

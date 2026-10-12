@@ -8,12 +8,18 @@ import EquipoSection from '../components/sections/EquipoSection.astro';
 import PlanVIPSection from '../components/sections/PlanVIPSection.astro';
 import ResenasSlider from '../components/sections/ResenasSlider.astro';
 import ContactoSection from '../components/sections/ContactoSection.astro';
-// noindex mientras sea staging: quitar en el cutover (Fase 6)
+import { clinics } from '../data/clinics';
+import { organizationSchema, clinicSchema } from '../data/schema';
+
+const schema = [
+  organizationSchema(),
+  ...clinics.map((c) => clinicSchema(c, `Clínica dental en ${c.locality} (${c.region}): implantes, ortodoncia invisible, estética dental, endodoncia, periodoncia, cirugía oral y odontopediatría.`)),
+];
 ---
 <PageLayout
   title="Clínica Dental Dr. Baos | Dentista en Toledo y Madrid"
   description="Clínica Dental Dr. Baos: odontología de vanguardia con trato cercano. Argés (Toledo) y Majadahonda (Madrid). 4,9★ en Google. Pide cita por WhatsApp."
-  noindex
+  schema={schema}
 >
   <HeroSection />
   <ClinicasSection />

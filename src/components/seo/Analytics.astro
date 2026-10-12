@@ -1,0 +1,25 @@
+---
+// Google Tag Manager con Consent Mode v2 (RGPD / AEPD).
+// Por defecto todo está denegado y GTM NO se carga hasta que el usuario acepta
+// analíticas o marketing en el banner (ConsentBanner.astro llama a window.__loadGTM).
+// Portado tal cual del sitio anterior para no romper la medición de Google Ads.
+export const GTM_ID = 'GTM-PCM5P3TS';
+---
+<script is:inline define:vars={{ GTM_ID }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    ad_storage: 'denied', analytics_storage: 'denied',
+    ad_user_data: 'denied', ad_personalization: 'denied',
+    wait_for_update: 500
+  });
+  window.__loadGTM = function () {
+    if (window.__gtmLoaded) return; window.__gtmLoaded = 1;
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0], j = d.createElement(s);
+      j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', GTM_ID);
+  };
+</script>

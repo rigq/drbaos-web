@@ -1,23 +1,47 @@
 ---
 import TreatmentRow from '../ui/TreatmentRow.astro';
 import { treatments } from '../../data/treatments';
+
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+  /** Enlace "ver todos" al pie */
+  showAllLink?: boolean;
+}
+const { eyebrow = 'Nuestros Servicios', heading = 'Tratamientos', intro, showAllLink = false } = Astro.props;
 ---
 <section class="section section--black tratamientos" id="tratamientos">
   <div class="container">
     <header class="tratamientos-header">
-      <span class="eyebrow">Nuestros Servicios</span>
-      <h2 class="h2">Tratamientos</h2>
+      <span class="eyebrow">{eyebrow}</span>
+      <h2 class="h2">{heading}</h2>
+      {intro && <p class="lead tratamientos-intro">{intro}</p>}
     </header>
     <ul class="tratamientos-list">
       {treatments.map((t) => <TreatmentRow treatment={t} />)}
     </ul>
+    {showAllLink && (
+      <a href="/tratamientos" class="tratamientos-all">Ver todos los tratamientos en detalle →</a>
+    )}
   </div>
 </section>
 
 <style>
   .tratamientos-header { margin-bottom: 40px; }
   .tratamientos-header .eyebrow { color: var(--gold); }
+  .tratamientos-intro { margin-top: 14px; max-width: 560px; }
   .tratamientos-list { border-top: 1px solid var(--border-dark); }
+  .tratamientos-all {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    margin-top: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gold);
+  }
+  .tratamientos-all:hover { color: var(--gold-lt); }
 
   @media (min-width: 900px) {
     .tratamientos-header { margin-bottom: 64px; }

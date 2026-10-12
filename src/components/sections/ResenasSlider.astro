@@ -1,13 +1,16 @@
 ---
 // Slider de reseñas: CSS scroll-snap nativo + flechas. Sin librerías.
 import { reviews, rating } from '../../data/reviews';
+import { clinics } from '../../data/clinics';
+
+const summary = clinics.map((c) => `${c.rating.score} en ${c.shortName} (${c.rating.count} reseñas)`).join(' · ');
 ---
 <section class="section section--cream resenas" id="resenas" aria-roledescription="carrusel" aria-label="Reseñas de pacientes">
   <div class="container">
     <header class="resenas-header">
       <span class="eyebrow">Reseñas de pacientes</span>
-      <h2 class="h2">{rating.score} sobre 5 en Google</h2>
-      <p class="lead">{rating.count} reseñas verificadas · Argés y Majadahonda</p>
+      <h2 class="h2">Lo que dicen nuestros pacientes</h2>
+      <p class="lead">★★★★★ {summary} en Google</p>
     </header>
 
     <div class="resenas-track" data-track tabindex="0">
@@ -23,7 +26,7 @@ import { reviews, rating } from '../../data/reviews';
 
     <div class="resenas-footer">
       <a href={rating.googleUrl} class="resenas-link" target="_blank" rel="noopener">Ver todas las reseñas en Google →</a>
-      <div class="resenas-arrows">
+      <div class="resenas-arrows" data-arrows>
         <button type="button" class="resenas-arrow" data-dir="-1" aria-label="Reseña anterior">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
         </button>
@@ -154,6 +157,7 @@ import { reviews, rating } from '../../data/reviews';
   document.querySelectorAll<HTMLElement>('.resenas').forEach((section) => {
     const track = section.querySelector<HTMLElement>('[data-track]');
     const buttons = section.querySelectorAll<HTMLButtonElement>('.resenas-arrow');
+    const arrows = section.querySelector<HTMLElement>('[data-arrows]');
     if (!track) return;
 
     const step = () => {
@@ -164,6 +168,8 @@ import { reviews, rating } from '../../data/reviews';
 
     const update = () => {
       const max = track.scrollWidth - track.clientWidth - 2;
+      // Sin desbordamiento (todas las reseñas caben) no hay nada que deslizar
+      if (arrows) arrows.hidden = max <= 0;
       buttons.forEach((b) => {
         b.disabled = b.dataset.dir === '-1' ? track.scrollLeft <= 2 : track.scrollLeft >= max;
       });

@@ -1,0 +1,98 @@
+---
+// Lista editorial numerada (01, 02…) con título, texto opcional y viñetas.
+// Sustituye a las rejillas de tarjetas icono-título-texto (patrón prohibido).
+interface Item {
+  title: string;
+  body?: string;
+  items?: string[];
+}
+interface Props {
+  items: Item[];
+  tone?: 'light' | 'dark';
+  /** 2 columnas en escritorio */
+  columns?: 1 | 2 | 3;
+}
+const { items, tone = 'light', columns = 2 } = Astro.props;
+---
+<ol class:list={['nlist', `nlist--${tone}`, `nlist--cols${columns}`]}>
+  {items.map((it, i) => (
+    <li class="nlist-item">
+      <span class="nlist-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+      <div class="nlist-body">
+        <h3 class="nlist-title">{it.title}</h3>
+        {it.body && <p class="nlist-text">{it.body}</p>}
+        {it.items && (
+          <ul class="nlist-points">
+            {it.items.map((p) => <li>{p}</li>)}
+          </ul>
+        )}
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .nlist {
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: 48px;
+    border-top: 1px solid var(--line);
+  }
+  .nlist--light { --line: var(--border-light); --muted: var(--muted-light); --ink: var(--black); --num: var(--gold-ink); }
+  .nlist--dark  { --line: var(--border-dark);  --muted: var(--muted-dark);  --ink: var(--on-dark); --num: var(--gold); }
+
+  .nlist-item {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 12px;
+    padding-block: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .nlist-num {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--num);
+  }
+  .nlist-title {
+    font-size: clamp(20px, .8vw + 16px, 24px);
+    line-height: 1.25;
+    letter-spacing: -.2px;
+    color: var(--ink);
+  }
+  .nlist-text {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .nlist-points { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .nlist-points li {
+    position: relative;
+    padding-left: 22px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+    opacity: .88;
+  }
+  .nlist-points li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--num);
+    font-weight: 300;
+  }
+
+  @media (min-width: 640px) {
+    .nlist-item { grid-template-columns: 64px 1fr; gap: 16px; padding-block: 28px; }
+    .nlist-num { font-size: 40px; }
+  }
+  @media (min-width: 900px) {
+    .nlist--cols2 { grid-template-columns: 1fr 1fr; }
+    .nlist--cols3 { grid-template-columns: repeat(3, 1fr); }
+    .nlist--cols3 .nlist-item { grid-template-columns: 1fr; gap: 14px; }
+    .nlist-points li, .nlist-text { font-size: 14px; }
+  }
+</style>

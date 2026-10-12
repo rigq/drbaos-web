@@ -2,17 +2,25 @@
 // Formulario de cita → WhatsApp. Sin backend: construye el mensaje y abre wa.me.
 // Validación heredada del sitio actual: nombre 2–60 caracteres, teléfono 9–15 dígitos.
 import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
-import { clinics } from '../../data/clinics';
+import { clinics, type ClinicId } from '../../data/clinics';
+
+interface Props {
+  /** Tratamiento de interés (páginas de tratamiento): se añade al mensaje */
+  treatment?: string;
+  /** Clínica preseleccionada */
+  clinic?: ClinicId;
+}
+const { treatment, clinic } = Astro.props;
 
 const clinicData = Object.fromEntries(
   clinics.map((c) => [c.id, { whatsapp: c.whatsapp, label: `${c.shortName} (${c.name.split(', ')[1]})` }]),
 );
 ---
-<form class="cita-form" data-cita-form data-clinics={JSON.stringify(clinicData)} novalidate>
+<form class="cita-form" data-cita-form data-clinics={JSON.stringify(clinicData)} data-treatment={treatment} novalidate>
   <div class="field">
     <label for="cf-clinica">Clínica</label>
     <select id="cf-clinica" name="clinica">
-      {clinics.map((c) => <option value={c.id}>{c.name} — {c.phone[0]}</option>)}
+      {clinics.map((c) => <option value={c.id} selected={c.id === clinic}>{c.name}</option>)}
     </select>
   </div>
 
@@ -168,8 +176,26 @@ const clinicData = Object.fromEntries(
 
       const c = clinics[clinica.value];
       if (!c) return;
-      const text = `Hola, soy ${n}. Mi teléfono es ${t}. Me gustaría pedir cita en la clínica de ${c.label}.${m ? ' ' + m : ''}`;
-      window.open(`https://wa.me/${c.whatsapp}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+      const tr = form.dataset.treatment;
+      const text = `Hola, soy ${n}. Mi teléfono es ${t}. Me gustaría pedir cita en la clínica de ${c.label}${tr ? ` para ${tr.toLowerCase()}` : ''}.${m ? ' ' + m : ''}`;
+      const url = `https://wa.me/${c.whatsapp}?text=${encodeURIComponent(text)}`;
+
+      // Conversión (GTM la reenvía solo con consentimiento). Mismo evento que el sitio anterior.
+      const w = window as unknown as { dataLayer?: unknown[] };
+      (w.dataLayer = w.dataLayer || []).push({
+        event: 'lead_whatsapp',
+        lead_source: 'formulario',
+        sede: c.label.split(' ')[0],
+        tratamiento: tr || '',
+      });
+
+      // Si el navegador bloquea window.open, abrimos con un enlace real
+      const win = window.open(url, '_blank');
+      if (!win) {
+        const a = document.createElement('a');
+        a.href = url; a.target = '_blank'; a.rel = 'noopener';
+        document.body.appendChild(a); a.click(); a.remove();
+      }
     });
   });
 </script>

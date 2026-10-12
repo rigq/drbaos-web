@@ -1,0 +1,102 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import ClinicVisit from '../components/ui/ClinicVisit.astro';
+import TeamGrid from '../components/ui/TeamGrid.astro';
+import Faq from '../components/ui/Faq.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import TratamientosSection from '../components/sections/TratamientosSection.astro';
+import ResenasSlider from '../components/sections/ResenasSlider.astro';
+import ContactoSection from '../components/sections/ContactoSection.astro';
+import { getClinic, telHref, waUrl } from '../data/clinics';
+import { teamFor } from '../data/team';
+import { clinicSchema, faqSchema, breadcrumbSchema, type Faq as FaqItem } from '../data/schema';
+
+const clinic = getClinic('arges');
+const description = 'Tu dentista de confianza en Argés, Toledo. Especialistas en estética dental, ortodoncia, implantes y más. 4,9★ en Google. Pide cita por WhatsApp.';
+
+const faqs: FaqItem[] = [
+  {
+    q: '¿Dónde está la clínica dental Dr. Baos en Argés?',
+    a: `Estamos en ${clinic.street}, ${clinic.postalCode} Argés (Toledo). Es nuestra clínica principal y atendemos a pacientes de Argés, Toledo capital y alrededores.`,
+  },
+  {
+    q: '¿Cuál es el horario de la clínica de Argés?',
+    a: 'Abrimos de lunes a jueves de 10:00 a 20:00 y los viernes de 10:00 a 14:00. Sábados y domingos permanecemos cerrados. Puedes pedir tu cita por WhatsApp en el 652 714 665 o llamarnos al 925 040 593.',
+  },
+  {
+    q: '¿Qué tratamientos dentales ofrecéis en Argés?',
+    a: 'La cartera completa: estética dental, ortodoncia (incluida la invisible, con sistemas como Invisalign), implantes dentales, endodoncia, periodoncia, odontopediatría, cirugía oral, prótesis y odontología general.',
+  },
+  {
+    q: '¿Atendéis urgencias dentales en Argés?',
+    a: 'Sí. Si tienes dolor o una urgencia dental, contáctanos cuanto antes por WhatsApp o teléfono y te daremos cita prioritaria el mismo día siempre que sea posible.',
+  },
+];
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Clínica de Argés', url: '/arges' },
+];
+
+const schema = [
+  clinicSchema(clinic, 'Tu dentista en Argés, Toledo. Clínica dental de vanguardia: estética dental, ortodoncia, implantes dentales, endodoncia, periodoncia, odontopediatría, cirugía oral y prótesis dental.'),
+  faqSchema(faqs),
+  breadcrumbSchema(crumbs),
+];
+---
+<PageLayout
+  title="Dentista en Argés, Toledo | Clínica Dental Dr. Baos"
+  description={description}
+  ogImage={clinic.image}
+  schema={schema}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Clínica Principal · Argés, Toledo"
+    title="Tu dentista en Argés, Toledo"
+    intro="Nuestra clínica principal. Odontología de vanguardia en el corazón de Argés, con el trato cercano que nos caracteriza."
+    image={{ src: clinic.image, alt: 'Fachada de la Clínica Dental Dr. Baos en Argés, Toledo', width: 1024, height: 712 }}
+    note={`★★★★★ ${clinic.rating.score} · ${clinic.rating.count} reseñas en Google`}
+  >
+    <a href={waUrl(clinic, 'Hola, me gustaría pedir cita en Argés.')} class="btn btn-gold" target="_blank" rel="noopener">
+      <WhatsAppIcon size={15} /> Pedir cita por WhatsApp
+    </a>
+    <a href={telHref(clinic.phone[0])} class="btn btn-outline-light">Llamar al {clinic.phone[0]}</a>
+  </PageHero>
+
+  <ClinicVisit
+    clinic={clinic}
+    image={{ src: '/assets/images/arges/arges1.avif', alt: 'Interior de la Clínica Dental Dr. Baos en Argés', width: 1024, height: 1280 }}
+  />
+
+  <section class="section section--cream">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Profesionales</span>
+        <h2 class="h2">Equipo de la clínica de Argés</h2>
+        <p class="lead">Especialistas comprometidos con tu salud.</p>
+      </header>
+      <TeamGrid members={teamFor('arges')} />
+    </div>
+  </section>
+
+  <TratamientosSection
+    eyebrow="Nuestros Servicios"
+    heading="Tratamientos en Argés"
+    intro="Todos nuestros tratamientos, con los mismos especialistas que en Majadahonda."
+    showAllLink
+  />
+
+  <ResenasSlider />
+
+  <Faq faqs={faqs} heading="Preguntas sobre tu dentista en Argés" />
+
+  <ContactoSection
+    only="arges"
+    eyebrow="Pide tu cita en Argés"
+    heading="Estamos a un mensaje de distancia"
+    intro="Rellena el formulario y te contactamos por WhatsApp para confirmar tu cita en la clínica de Argés en el horario que mejor te venga. ¿Estás en Madrid? Visita nuestra clínica de Majadahonda."
+  />
+</PageLayout>
+
