@@ -1,0 +1,86 @@
+---
+// Plan VIP: contenido de la sección aprobada del prototipo (index-nuevo.html).
+// Sin precios ni condiciones: la clínica los explica en consulta o por WhatsApp.
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import NumberedList from '../components/ui/NumberedList.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import ContactoSection from '../components/sections/ContactoSection.astro';
+import { clinics, waUrl } from '../data/clinics';
+import { breadcrumbSchema } from '../data/schema';
+
+const benefits = [
+  { title: 'Revisiones periódicas incluidas', body: 'Diagnóstico completo en cada revisión.' },
+  { title: 'Limpiezas profesionales', body: 'Limpiezas dentales profesionales sin coste adicional.' },
+  { title: 'Descuento exclusivo', body: 'Descuento en todos los tratamientos para los miembros del plan.' },
+  { title: 'Cita prioritaria', body: 'Sin esperas, siempre disponible.' },
+  { title: 'Urgencias incluidas', body: 'Urgencias atendidas sin cargo adicional.' },
+  { title: 'Para toda la familia', body: 'Extensible a toda la unidad familiar.' },
+];
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Plan VIP', url: '/plan-vip' },
+];
+---
+<PageLayout
+  title="Plan VIP de Salud Dental | Clínica Dental Dr. Baos"
+  description="Plan VIP Dr. Baos: un plan anual con revisiones y limpiezas incluidas, descuentos en tratamientos, cita prioritaria y urgencias sin cargo, extensible a toda la familia. En Argés y Majadahonda."
+  schema={breadcrumbSchema(crumbs)}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Plan de Salud Dental"
+    title="Plan VIP Dr. Baos"
+    intro="Un plan anual que convierte el cuidado dental de tu familia en algo sencillo, predecible y sin sorpresas. Disponible en Argés y Majadahonda."
+  >
+    {clinics.map((c, i) => (
+      <a
+        href={waUrl(c, `Hola, me gustaría saber más sobre el Plan VIP en ${c.shortName}.`)}
+        class:list={['btn', i === 0 ? 'btn-gold' : 'btn-outline-light']}
+        target="_blank"
+        rel="noopener"
+      >
+        <WhatsAppIcon size={15} /> Consultar en {c.shortName}
+      </a>
+    ))}
+  </PageHero>
+
+  <section class="section section--cream">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Qué incluye</span>
+        <h2 class="h2">Todo tu cuidado dental, en un solo plan</h2>
+      </header>
+      <NumberedList items={benefits} columns={3} />
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="container join">
+      <div>
+        <span class="eyebrow">Cómo hacerse miembro</span>
+        <h2 class="h2">Hazte miembro del Plan VIP</h2>
+        <p class="lead">Pregúntanos por las condiciones en tu próxima visita o escríbenos por WhatsApp. Te lo explicamos sin compromiso.</p>
+      </div>
+      <p class="join-note">Sin permanencia obligatoria. Sin letra pequeña. Pregunta sin compromiso.</p>
+    </div>
+  </section>
+
+  <ContactoSection eyebrow="Plan VIP" heading="Pregúntanos por el Plan VIP" intro="Déjanos tus datos y te explicamos las condiciones por WhatsApp, sin compromiso." treatment="el Plan VIP" />
+</PageLayout>
+
+<style>
+  .join { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: end; }
+  .join .eyebrow { color: var(--muted-light); }
+  .join .lead { margin-top: 14px; max-width: 560px; }
+  .join-note {
+    padding-top: 16px;
+    border-top: 1px solid var(--border-light);
+    font-size: 14px;
+    color: var(--muted-light);
+  }
+  @media (min-width: 900px) {
+    .join { grid-template-columns: 1.4fr 1fr; gap: 64px; }
+  }
+</style>

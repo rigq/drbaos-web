@@ -1,0 +1,51 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import { getClinic, waUrl } from '../data/clinics';
+import { treatments } from '../data/treatments';
+---
+<PageLayout
+  title="Página no encontrada (404) | Clínica Dental Dr. Baos"
+  description="La página que buscas no existe o se ha movido. Vuelve al inicio o pide tu cita en la Clínica Dental Dr. Baos."
+  noindex
+>
+  <PageHero
+    eyebrow="Error 404"
+    title="Esta página no existe"
+    intro="Puede que el enlace esté roto o que la página se haya movido. No te preocupes: te llevamos de vuelta a un lugar seguro. Si buscabas pedir cita, escríbenos por WhatsApp y te atendemos al momento."
+  >
+    <a href="/" class="btn btn-gold">Volver al inicio</a>
+    <a href={waUrl(getClinic('arges'))} class="btn btn-outline-light" target="_blank" rel="noopener"><WhatsAppIcon size={15} /> Pedir cita por WhatsApp</a>
+  </PageHero>
+
+  <section class="section section--cream">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Quizá buscabas</span>
+        <h2 class="h2">Nuestros tratamientos</h2>
+      </header>
+      <ul class="links">
+        {treatments.map((t) => <li><a href={t.url}>{t.name}</a></li>)}
+        <li><a href="/arges">Clínica de Argés</a></li>
+        <li><a href="/dentista-majadahonda">Clínica de Majadahonda</a></li>
+        <li><a href="/blog">Blog</a></li>
+      </ul>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .links { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--border-light); column-gap: 48px; }
+  .links a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    border-bottom: 1px solid var(--border-light);
+    font-family: var(--font-serif);
+    font-size: 20px;
+    transition: color .2s;
+  }
+  .links a:hover { color: var(--gold-ink); }
+  @media (min-width: 900px) { .links { grid-template-columns: repeat(3, 1fr); } }
+</style>

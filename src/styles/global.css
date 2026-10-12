@@ -67,6 +67,8 @@ img, picture, video, svg { display: block; max-width: 100%; }
 img { height: auto; }
 
 a { color: inherit; text-decoration: none; }
+/* Sistema de diseño: sin cursivas como énfasis (se usa peso o color) */
+em, i { font-style: normal; }
 ul, ol { list-style: none; }
 
 button {

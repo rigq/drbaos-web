@@ -1,0 +1,51 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import TeamGrid from '../components/ui/TeamGrid.astro';
+import SobreSection from '../components/sections/SobreSection.astro';
+import ContactoSection from '../components/sections/ContactoSection.astro';
+import { doctors, team } from '../data/team';
+import { breadcrumbSchema } from '../data/schema';
+
+const hygienists = team.filter((m) => !m.doctor);
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Equipo', url: '/equipo' },
+];
+---
+<PageLayout
+  title="Nuestro Equipo | Clínica Dental Dr. Baos"
+  description="Conoce al equipo de la Clínica Dental Dr. Baos: especialistas en implantología, estética dental, endodoncia, cirugía oral y periodoncia en Argés (Toledo) y Majadahonda (Madrid)."
+  schema={breadcrumbSchema(crumbs)}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Nuestros Especialistas"
+    title="Caras conocidas para cuidar tu sonrisa"
+    intro="Un equipo multidisciplinar en el que cada área la lleva un profesional dedicado a ella. Los mismos especialistas atienden en Argés y en Majadahonda."
+  />
+
+  <section class="section section--white">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Odontólogos</span>
+        <h2 class="h2">El equipo clínico</h2>
+      </header>
+      <TeamGrid members={doctors} />
+    </div>
+  </section>
+
+  <section class="section section--cream">
+    <div class="container">
+      <header class="block-header">
+        <span class="eyebrow">Higiene dental</span>
+        <h2 class="h2">Higienistas</h2>
+      </header>
+      <TeamGrid members={hygienists} />
+    </div>
+  </section>
+
+  <SobreSection />
+
+  <ContactoSection />
+</PageLayout>

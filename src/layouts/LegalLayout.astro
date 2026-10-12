@@ -1,0 +1,97 @@
+---
+// Páginas legales: texto en una columna de lectura sobre fondo crema.
+// El contenido vive en src/legal/*.md (texto literal del sitio anterior).
+import PageLayout from './PageLayout.astro';
+import { breadcrumbSchema } from '../data/schema';
+
+interface Props {
+  title: string;
+  metaTitle: string;
+  description: string;
+  url: string;
+}
+const { title, metaTitle, description, url } = Astro.props;
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: title, url },
+];
+---
+<PageLayout title={metaTitle} description={description} schema={breadcrumbSchema(crumbs)}>
+  <section class="legal">
+    <div class="container legal-inner">
+      <nav class="crumbs" aria-label="Ruta de navegación">
+        <ol>
+          <li><a href="/">Inicio</a></li>
+          <li><span aria-current="page">{title}</span></li>
+        </ol>
+      </nav>
+      <h1 class="legal-title">{title}</h1>
+      <div class="legal-body">
+        <slot />
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .legal { background: var(--cream); padding-block: 32px 80px; }
+  .legal-inner { max-width: calc(760px + var(--gutter) * 2); }
+
+  .crumbs { margin-bottom: 16px; }
+  .crumbs ol { display: flex; flex-wrap: wrap; }
+  .crumbs li { display: flex; align-items: center; font-size: 12px; color: var(--muted-light); }
+  .crumbs li + li::before { content: '/'; margin-inline: 10px; opacity: .5; }
+  .crumbs a { display: inline-flex; align-items: center; min-height: var(--tap); }
+
+  .legal-title { font-size: clamp(34px, 3vw + 20px, 52px); letter-spacing: -.8px; margin-bottom: 28px; }
+
+  .legal-body { font-size: 16px; line-height: 1.75; color: #2A2724; }
+  .legal-body :global(p) { margin-bottom: 1.1em; }
+  .legal-body :global(h2) {
+    margin-block: 2em .6em;
+    font-size: clamp(22px, .8vw + 18px, 26px);
+    color: var(--black);
+  }
+  .legal-body :global(ul) { margin-bottom: 1.2em; border-top: 1px solid var(--border-light); }
+  .legal-body :global(li) {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 15px;
+  }
+  .legal-body :global(strong) { font-weight: 600; color: var(--black); }
+  .legal-body :global(a) { color: var(--black); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
+  .legal-body :global(li a) { display: inline-flex; align-items: center; min-height: var(--tap); }
+
+  /* Tabla de cookies: desplazable en móvil sin romper la página */
+  .legal-body :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin-block: 1em 1.4em;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .legal-body :global(th),
+  .legal-body :global(td) {
+    min-width: 130px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-light);
+    text-align: left;
+    vertical-align: top;
+  }
+  .legal-body :global(th) {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+    background: var(--white);
+  }
+
+  @media (min-width: 900px) {
+    .legal { padding-block: 48px 110px; }
+    .legal-body :global(table) { display: table; width: 100%; }
+    .legal-body :global(th), .legal-body :global(td) { min-width: 0; }
+  }
+</style>
