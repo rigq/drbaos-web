@@ -39,7 +39,7 @@ const crumbs = [
     <div class="container">
       <header class="block-header">
         <span class="eyebrow">Higiene dental</span>
-        <h2 class="h2">Higienistas</h2>
+        <h2 class="h2">{hygienists.length === 1 ? "Higienista" : "Higienistas"}</h2>
       </header>
       <TeamGrid members={hygienists} />
     </div>
