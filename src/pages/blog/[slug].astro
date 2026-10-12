@@ -1,0 +1,23 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import { getPublishedPosts, type Post } from '../../data/blog';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => {
+    // Relacionados: misma categoría primero, luego los más recientes
+    const related = [
+      ...posts.filter((p) => p.slug !== post.slug && p.data.category === post.data.category),
+      ...posts.filter((p) => p.slug !== post.slug && p.data.category !== post.data.category),
+    ].slice(0, 3);
+    return { params: { slug: post.slug }, props: { post, related } };
+  });
+}
+
+interface Props { post: Post; related: Post[] }
+const { post, related } = Astro.props;
+const { Content } = await post.render();
+---
+<BlogLayout post={post} related={related}>
+  <Content />
+</BlogLayout>

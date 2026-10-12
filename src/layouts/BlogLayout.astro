@@ -1,0 +1,257 @@
+---
+// Layout de artículo: cabecera editorial, imagen, cuerpo en columna de lectura,
+// llamada a la acción por clínica, FAQ, artículos relacionados y contacto.
+import PageLayout from './PageLayout.astro';
+import Faq from '../components/ui/Faq.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import ContactoSection from '../components/sections/ContactoSection.astro';
+import { clinics, waUrl } from '../data/clinics';
+import { formatDate, postUrl, readingTime, type Post } from '../data/blog';
+import { articleSchema, breadcrumbSchema, faqSchema } from '../data/schema';
+
+interface Props {
+  post: Post;
+  related: Post[];
+}
+const { post, related } = Astro.props;
+const d = post.data;
+const url = postUrl(post);
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Blog', url: '/blog' },
+  { name: d.title, url },
+];
+
+const schema = [
+  articleSchema({ title: d.title, description: d.description, url, image: d.image, published: d.publishDate, updated: d.updatedDate, author: d.author }),
+  breadcrumbSchema(crumbs),
+  ...(d.faqs?.length ? [faqSchema(d.faqs)] : []),
+];
+---
+<PageLayout title={`${d.title} | Clínica Dental Dr. Baos`} description={d.description} ogImage={d.image} ogType="article" schema={schema}>
+  <article>
+    <header class="post-head">
+      <div class="container post-head-inner">
+        <nav class="crumbs" aria-label="Ruta de navegación">
+          <ol>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ol>
+        </nav>
+        <p class="post-meta">
+          <span class="post-cat">{d.category}</span>
+          <time datetime={d.publishDate.toISOString().slice(0, 10)}>{formatDate(d.publishDate)}</time>
+          <span>{readingTime(post)} min de lectura</span>
+        </p>
+        <h1 class="post-title">{d.title}</h1>
+        {d.excerpt && <p class="post-excerpt">{d.excerpt}</p>}
+      </div>
+    </header>
+
+    {d.image && (
+      <figure class="post-figure container">
+        <img src={d.image} alt={d.imageAlt ?? ''} width="1400" height="933" fetchpriority="high" decoding="async" />
+        {d.imageCaption && <figcaption>{d.imageCaption}</figcaption>}
+      </figure>
+    )}
+
+    <div class="container">
+      <div class="prose">
+        <slot />
+      </div>
+
+      <aside class="post-cta" aria-label="Pedir cita">
+        <h2 class="post-cta-title">¿Tienes dudas sobre tu caso?</h2>
+        <p>Escríbenos por WhatsApp y te orientamos sin compromiso, o pide tu primera valoración en la clínica que te quede más cerca.</p>
+        <div class="post-cta-actions">
+          {clinics.map((c, i) => (
+            <a
+              href={waUrl(c, `Hola, he leído el artículo «${d.title}» y me gustaría pedir cita en ${c.shortName}.`)}
+              class:list={['btn', i === 0 ? 'btn-gold' : 'btn-outline-dark']}
+              target="_blank"
+              rel="noopener"
+            >
+              <WhatsAppIcon size={15} /> {c.shortName}
+            </a>
+          ))}
+        </div>
+      </aside>
+
+      <p class="post-author">Contenido revisado por el <strong>{d.author === 'Equipo Clínica Dental Dr. Baos' ? 'equipo de Clínica Dental Dr. Baos' : d.author}</strong> · Argés (Toledo) y Majadahonda (Madrid)</p>
+    </div>
+  </article>
+
+  {d.faqs && d.faqs.length > 0 && (
+    <Faq faqs={d.faqs} heading={d.faqHeading ?? 'Preguntas frecuentes'} tone="cream" />
+  )}
+
+  {related.length > 0 && (
+    <section class="section section--white">
+      <div class="container">
+        <header class="block-header">
+          <span class="eyebrow">Sigue leyendo</span>
+          <h2 class="h2">Artículos relacionados</h2>
+        </header>
+        <ul class="related">
+          {related.map((r) => (
+            <li>
+              <a href={postUrl(r)}>
+                <span class="related-meta">{r.data.category} · {formatDate(r.data.publishDate)}</span>
+                <span class="related-title">{r.data.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/blog" class="related-all">Ver todos los artículos →</a>
+      </div>
+    </section>
+  )}
+
+  <ContactoSection />
+</PageLayout>
+
+<style>
+  .post-head {
+    background: var(--cream);
+    padding-block: 32px 40px;
+  }
+  .post-head-inner { max-width: calc(760px + var(--gutter) * 2); }
+
+  .crumbs { margin-bottom: 20px; }
+  .crumbs ol { display: flex; flex-wrap: wrap; }
+  .crumbs li { display: flex; align-items: center; font-size: 12px; color: var(--muted-light); }
+  .crumbs li + li::before { content: '/'; margin-inline: 10px; opacity: .5; }
+  .crumbs a { display: inline-flex; align-items: center; min-height: var(--tap); }
+  .crumbs a:hover { color: var(--black); }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 12px;
+    color: var(--muted-light);
+  }
+  .post-cat {
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+  }
+  .post-title {
+    margin-top: 14px;
+    font-size: clamp(32px, 3.6vw + 16px, 54px);
+    line-height: 1.08;
+    letter-spacing: -.8px;
+  }
+  .post-excerpt {
+    margin-top: 18px;
+    font-size: clamp(16px, .4vw + 15px, 18px);
+    line-height: 1.7;
+    color: var(--muted-light);
+  }
+
+  .post-figure { margin-top: 0; max-width: calc(1000px + var(--gutter) * 2); padding-top: 24px; }
+  .post-figure img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+  .post-figure figcaption { margin-top: 10px; font-size: 13px; color: var(--muted-light); }
+
+  /* ── Tipografía del cuerpo (Markdown) ── */
+  .prose {
+    max-width: 680px;
+    margin: 40px auto 0;
+    font-size: 17px;
+    line-height: 1.8;
+    color: #2A2724;
+  }
+  .prose :global(p) { margin-block: 0 1.2em; }
+  .prose :global(p:first-child) { font-size: 1.12em; color: var(--black); }
+  .prose :global(h2) {
+    margin-block: 1.9em .6em;
+    font-size: clamp(26px, 1.4vw + 20px, 32px);
+    line-height: 1.2;
+    letter-spacing: -.3px;
+    color: var(--black);
+  }
+  .prose :global(h3) {
+    margin-block: 1.6em .5em;
+    font-size: clamp(20px, .6vw + 18px, 23px);
+    color: var(--black);
+  }
+  .prose :global(ul), .prose :global(ol) { margin-block: 0 1.4em; padding-left: 0; }
+  .prose :global(ul li) { position: relative; padding-left: 26px; margin-bottom: .6em; }
+  .prose :global(ul li)::before { content: '—'; position: absolute; left: 0; color: var(--gold-ink); }
+  .prose :global(ol) { list-style: decimal; padding-left: 1.4em; }
+  .prose :global(ol li) { margin-bottom: .6em; padding-left: .3em; }
+  .prose :global(ol li::marker) { color: var(--gold-ink); font-family: var(--font-serif); }
+  .prose :global(strong) { font-weight: 600; color: var(--black); }
+  .prose :global(a) {
+    color: var(--black);
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .prose :global(a:hover) { text-decoration-thickness: 2px; }
+  .prose :global(blockquote) {
+    margin-block: 1.6em;
+    padding-left: 20px;
+    border-left: 2px solid var(--gold);
+    font-family: var(--font-serif);
+    font-size: 1.1em;
+  }
+
+  .post-cta {
+    max-width: 680px;
+    margin: 48px auto 0;
+    padding: 28px 22px;
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    border-top: 3px solid var(--gold);
+  }
+  .post-cta-title { font-size: 24px; letter-spacing: -.3px; }
+  .post-cta p { margin-top: 8px; font-size: 15px; line-height: 1.65; color: var(--muted-light); }
+  .post-cta-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+
+  .post-author {
+    max-width: 680px;
+    margin: 28px auto 72px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-light);
+    font-size: 13px;
+    color: var(--muted-light);
+  }
+  .post-author strong { color: var(--black); font-weight: 600; }
+
+  .related { border-top: 1px solid var(--border-light); display: grid; grid-template-columns: 1fr; column-gap: 48px; }
+  .related a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-block: 18px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .related-meta { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-light); }
+  .related-title { font-family: var(--font-serif); font-size: 21px; line-height: 1.3; color: var(--black); transition: color .2s; }
+  .related a:hover .related-title { color: var(--gold-ink); }
+  .related-all {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    margin-top: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gold-ink);
+  }
+
+  @media (min-width: 480px) {
+    .post-cta-actions { flex-direction: row; }
+  }
+  @media (min-width: 640px) {
+    .post-cta { padding: 32px; }
+  }
+  @media (min-width: 900px) {
+    .post-head { padding-block: 48px 56px; }
+    .prose { margin-top: 56px; font-size: 18px; }
+    .related { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>

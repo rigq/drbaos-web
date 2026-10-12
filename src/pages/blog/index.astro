@@ -1,0 +1,144 @@
+---
+// Listado del blog: el artículo más reciente destacado y el resto como lista editorial,
+// con filtro por categoría (enlaces con ancla, sin recargar; funciona sin JS mostrando todo).
+import PageLayout from '../../layouts/PageLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import { getPublishedPosts, formatDate, postUrl, readingTime } from '../../data/blog';
+import { breadcrumbSchema } from '../../data/schema';
+
+const posts = await getPublishedPosts();
+const [featured, ...rest] = posts;
+const categories = [...new Set(posts.map((p) => p.data.category))];
+const slugify = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, '-');
+
+const crumbs = [
+  { name: 'Inicio', url: '/' },
+  { name: 'Blog', url: '/blog' },
+];
+---
+<PageLayout
+  title="Blog — Consejos de Salud Dental | Clínica Dental Dr. Baos"
+  description="Consejos de salud dental de la Clínica Dr. Baos: implantes, ortodoncia invisible, estética, urgencias y odontopediatría explicados de forma clara y cercana, en Toledo y Madrid."
+  schema={breadcrumbSchema(crumbs)}
+>
+  <PageHero
+    crumbs={crumbs}
+    eyebrow="Blog Dr. Baos"
+    title="Consejos de salud dental"
+    intro="Guías claras y cercanas para cuidar tu sonrisa: te explicamos cada tratamiento sin tecnicismos, para que tomes decisiones con toda la información."
+  />
+
+  <section class="section section--cream blog">
+    <div class="container">
+      {featured && (
+        <a href={postUrl(featured)} class="featured" data-cat={slugify(featured.data.category)}>
+          {featured.data.image && (
+            <div class="featured-media">
+              <img src={featured.data.image} alt={featured.data.imageAlt ?? ''} width="1400" height="933" decoding="async" />
+            </div>
+          )}
+          <div class="featured-text">
+            <span class="post-meta">{featured.data.category} · {formatDate(featured.data.publishDate)}</span>
+            <h2 class="featured-title">{featured.data.title}</h2>
+            <p class="featured-excerpt">{featured.data.excerpt ?? featured.data.description}</p>
+            <span class="read-more">Leer artículo · {readingTime(featured)} min →</span>
+          </div>
+        </a>
+      )}
+
+      <div class="filters" role="group" aria-label="Filtrar por categoría">
+        <button type="button" class="filter" aria-pressed="true" data-filter="all">Todos</button>
+        {categories.map((c) => (
+          <button type="button" class="filter" aria-pressed="false" data-filter={slugify(c)}>{c}</button>
+        ))}
+      </div>
+
+      <ul class="posts">
+        {rest.map((p) => (
+          <li data-cat={slugify(p.data.category)}>
+            <a href={postUrl(p)} class="post-row">
+              <span class="post-meta">{p.data.category} · {formatDate(p.data.publishDate)}</span>
+              <span class="post-row-title">{p.data.title}</span>
+              <span class="post-row-excerpt">{p.data.excerpt ?? p.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="empty" hidden>No hay más artículos en esta categoría.</p>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .featured {
+    display: grid;
+    grid-template-columns: 1fr;
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    margin-bottom: 40px;
+    transition: box-shadow .3s var(--ease);
+  }
+  .featured-media { overflow: hidden; }
+  .featured-media img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; transition: transform .7s var(--ease); }
+  .featured-text { padding: 24px 20px 28px; display: flex; flex-direction: column; gap: 10px; }
+  .post-meta { font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-light); }
+  .featured-title { font-size: clamp(26px, 1.8vw + 18px, 38px); line-height: 1.15; letter-spacing: -.5px; }
+  .featured-excerpt { font-size: 15px; line-height: 1.7; color: var(--muted-light); }
+  .read-more { margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--gold-ink); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .filter {
+    min-height: var(--tap);
+    padding: 8px 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+    font-size: 13px;
+    color: var(--black);
+    background: transparent;
+    transition: background-color .2s, color .2s, border-color .2s;
+  }
+  .filter:hover { border-color: var(--black); }
+  .filter[aria-pressed='true'] { background: var(--black); color: var(--cream); border-color: var(--black); }
+
+  .posts { border-top: 1px solid var(--border-light); margin-top: 16px; display: grid; grid-template-columns: 1fr; column-gap: 48px; }
+  .post-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-block: 22px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .post-row-title { font-family: var(--font-serif); font-size: clamp(21px, .8vw + 17px, 25px); line-height: 1.25; color: var(--black); transition: color .2s; }
+  .post-row-excerpt { font-size: 14px; line-height: 1.65; color: var(--muted-light); }
+  .empty { padding-block: 24px; color: var(--muted-light); }
+
+  @media (min-width: 900px) {
+    .featured { grid-template-columns: 1.2fr 1fr; align-items: center; margin-bottom: 56px; }
+    .featured-media img { aspect-ratio: 4 / 3; height: 100%; }
+    .featured-text { padding: 40px; }
+    .posts { grid-template-columns: 1fr 1fr; }
+  }
+  @media (hover: hover) {
+    .featured:hover { box-shadow: 0 20px 48px rgba(20,18,16,.07); }
+    .featured:hover .featured-media img { transform: scale(1.03); }
+    .post-row:hover .post-row-title { color: var(--gold-ink); }
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter');
+  const items = document.querySelectorAll<HTMLElement>('.posts li, .featured');
+  const empty = document.querySelector<HTMLElement>('.empty');
+
+  buttons.forEach((b) => b.addEventListener('click', () => {
+    const f = b.dataset.filter;
+    buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    let shown = 0;
+    items.forEach((it) => {
+      const ok = f === 'all' || it.dataset.cat === f;
+      it.hidden = !ok;
+      if (ok && it.tagName === 'LI') shown++;
+    });
+    if (empty) empty.hidden = shown > 0 || f === 'all';
+  }));
+</script>
