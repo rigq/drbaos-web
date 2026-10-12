@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  /** URL canónica absoluta. Por defecto se deriva de `site` + ruta actual. */
+  canonical?: string;
+  /** Ruta (relativa a /public) o URL absoluta de la imagen Open Graph. */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = '/assets/images/brand/android-chrome-512x512.png',
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://clinicadentaldrbaos.com');
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site).href;
+const ogImageUrl = new URL(ogImage, site).href;
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+  <meta property="og:type" content={ogType} />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:site_name" content="Clínica Dental Dr. Baos" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="theme-color" content="#141210" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/assets/images/brand/android-chrome-192x192.png" />
+  <link rel="apple-touch-icon" href="/assets/images/brand/android-chrome-192x192.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <slot name="head" />
+</head>
+<body>
+  <slot />
+</body>
+</html>

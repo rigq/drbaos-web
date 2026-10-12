@@ -1,0 +1,113 @@
+---
+import { navLinks, isCurrent } from './navLinks';
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { clinics, waUrl } from '../../data/clinics';
+
+const pathname = Astro.url.pathname;
+---
+<nav class="nav-mobile" id="navMobile" aria-label="Menú móvil" hidden>
+  <div class="nav-mobile-links">
+    {navLinks.map((l) => (
+      <a href={l.href} aria-current={isCurrent(l.href, pathname) ? 'page' : undefined}>{l.label}</a>
+    ))}
+  </div>
+
+  <div class="nav-mobile-ctas">
+    <span class="nav-mobile-label">Pedir cita por WhatsApp</span>
+    {clinics.map((c, i) => (
+      <a
+        href={waUrl(c)}
+        class:list={['btn', 'btn-full', i === 0 ? 'btn-gold' : 'btn-outline-light']}
+        target="_blank"
+        rel="noopener"
+      >
+        <WhatsAppIcon size={16} />
+        {c.shortName}
+      </a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .nav-mobile {
+    position: fixed;
+    inset: var(--nav-h) 0 0 0;
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 24px var(--gutter) calc(32px + env(safe-area-inset-bottom, 0px));
+    background: var(--black);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .nav-mobile[hidden] { display: none; }
+
+  .nav-mobile-links {
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-mobile-links a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    font-family: var(--font-serif);
+    font-size: clamp(22px, 5vw + 6px, 28px);
+    font-weight: 400;
+    color: var(--on-dark);
+    border-bottom: 1px solid var(--border-dark);
+  }
+  .nav-mobile-links a[aria-current='page'] { color: var(--gold); }
+
+  .nav-mobile-ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .nav-mobile-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted-dark);
+    margin-bottom: 4px;
+  }
+  .nav-mobile-ctas .btn { font-size: 15px; min-height: 50px; }
+
+  @media (min-width: 900px) {
+    .nav-mobile { display: none !important; }
+  }
+</style>
+
+<script>
+  const button = document.getElementById('hamburger');
+  const menu = document.getElementById('navMobile');
+
+  if (button && menu) {
+    const setOpen = (open: boolean) => {
+      menu.hidden = !open;
+      button.setAttribute('aria-expanded', String(open));
+      button.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+
+    button.addEventListener('click', () => setOpen(menu.hidden));
+
+    menu.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => setOpen(false)),
+    );
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) {
+        setOpen(false);
+        button.focus();
+      }
+    });
+
+    // Si se agranda la ventana a escritorio con el menú abierto, se cierra.
+    window.matchMedia('(min-width: 900px)').addEventListener('change', (mq) => {
+      if (mq.matches) setOpen(false);
+    });
+  }
+</script>

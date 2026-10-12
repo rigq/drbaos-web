@@ -1,0 +1,171 @@
+---
+import { clinics, telHref } from '../../data/clinics';
+
+// Pasará a leerse de src/data/treatments.ts en la Fase 2.
+const treatmentLinks = [
+  { label: 'Estética Dental', href: '/tratamientos/estetica-dental' },
+  { label: 'Implantes Dentales', href: '/tratamientos/implantes-dentales' },
+  { label: 'Ortodoncia Invisible', href: '/tratamientos/ortodoncia-invisible' },
+  { label: 'Endodoncia', href: '/tratamientos/endodoncia' },
+  { label: 'Periodoncia', href: '/tratamientos/periodoncia' },
+  { label: 'Cirugía Oral', href: '/tratamientos/cirugia-oral' },
+  { label: 'Odontopediatría', href: '/tratamientos/odontopediatria' },
+  { label: 'Urgencias', href: '/tratamientos/urgencias-dentales' },
+];
+
+const clinicLinks = [
+  ...clinics.map((c) => ({ label: c.name, href: c.pageUrl })),
+  { label: 'Equipo', href: '/equipo' },
+  { label: 'Plan VIP', href: '/plan-vip' },
+  { label: 'Blog', href: '/blog' },
+];
+
+const legalLinks = [
+  { label: 'Aviso Legal', href: '/aviso-legal' },
+  { label: 'Privacidad', href: '/politica-privacidad' },
+  { label: 'Cookies', href: '/politica-cookies' },
+];
+
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo" aria-label="Clínica Dental Dr. Baos — Inicio">
+          <img src="/assets/images/brand/logo-db.png" alt="Clínica Dental Dr. Baos" width="439" height="235" loading="lazy" />
+        </a>
+        <p class="footer-tagline">Odontología de vanguardia con trato cercano. Argés (Toledo) y Majadahonda (Madrid).</p>
+      </div>
+
+      <div class="footer-col-treat">
+        <h2 class="footer-col-title">Tratamientos</h2>
+        <ul class="footer-links">
+          {treatmentLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-col-title">Clínica</h2>
+        <ul class="footer-links">
+          {clinicLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="footer-col-title">Contacto</h2>
+        <ul class="footer-links">
+          {clinics.map((c) => (
+            <li><a href={telHref(c.phone[0])}>{c.phone[0]} <span class="footer-muted">({c.shortName})</span></a></li>
+          ))}
+          <li><a href="https://www.instagram.com/clinicadental.drbaos/" target="_blank" rel="noopener">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {year} Clínica Dental Dr. Baos</span>
+      <ul class="footer-legal">
+        {legalLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--black);
+    color: var(--on-dark);
+    padding-block: 56px 28px;
+    border-top: 1px solid var(--border-dark);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  .footer-logo { display: inline-block; }
+  .footer-logo img {
+    height: 32px;
+    width: auto;
+    filter: brightness(0) invert(1);
+    margin-bottom: 16px;
+  }
+  .footer-tagline {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--muted-dark);
+    max-width: 280px;
+  }
+
+  .footer-col-title {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--on-dark);
+    margin-bottom: 12px;
+  }
+
+  .footer-links { display: flex; flex-direction: column; }
+  .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-size: 14px;
+    color: var(--muted-dark);
+    transition: color .2s;
+  }
+  .footer-links a:hover { color: var(--on-dark); }
+  .footer-muted { margin-left: 4px; opacity: .8; }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 24px;
+    font-size: 12px;
+    color: var(--muted-dark);
+  }
+  .footer-legal { display: flex; flex-wrap: wrap; column-gap: 24px; }
+  .footer-legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    transition: color .2s;
+  }
+  .footer-legal a:hover { color: var(--on-dark); }
+
+  @media (min-width: 640px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; column-gap: 32px; }
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-col-treat { grid-row: span 2; }
+  }
+
+  @media (min-width: 900px) {
+    .footer { padding-block: 80px 32px; }
+    .footer-grid {
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 64px;
+    }
+    .footer-brand { grid-column: auto; }
+    .footer-col-treat { grid-row: auto; }
+    .footer-logo img { height: 38px; margin-bottom: 18px; }
+    .footer-tagline { font-size: 13px; max-width: 220px; }
+    .footer-col-title { margin-bottom: 16px; }
+    .footer-links { gap: 2px; }
+    .footer-links a { min-height: 32px; font-size: 13px; }
+    .footer-bottom {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 32px;
+    }
+  }
+</style>

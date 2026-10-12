@@ -1,0 +1,141 @@
+---
+import { navLinks, isCurrent } from './navLinks';
+import NavMobile from './NavMobile.astro';
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { getClinic, waUrl } from '../../data/clinics';
+
+const pathname = Astro.url.pathname;
+const ctaHref = waUrl(getClinic('arges'));
+---
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Clínica Dental Dr. Baos — Inicio">
+      <img src="/assets/images/brand/logo-db.png" alt="Clínica Dental Dr. Baos" width="439" height="235" />
+    </a>
+
+    <nav class="nav-links" aria-label="Principal">
+      {navLinks.filter((l) => !l.mobileOnly).map((l) => (
+        <a href={l.href} aria-current={isCurrent(l.href, pathname) ? 'page' : undefined}>{l.label}</a>
+      ))}
+    </nav>
+
+    <div class="nav-actions">
+      <a href={ctaHref} class="btn btn-gold nav-cta" target="_blank" rel="noopener">
+        <WhatsAppIcon size={15} />
+        <span>Pedir Cita</span>
+      </a>
+      <button
+        class="hamburger"
+        id="hamburger"
+        type="button"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="navMobile"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<NavMobile />
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    height: var(--nav-h);
+    background: var(--black);
+    border-bottom: 1px solid var(--border-dark);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 100%;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap);
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .nav-logo img {
+    height: 30px;
+    width: auto;
+    filter: brightness(0) invert(1);
+  }
+
+  /* Enlaces de escritorio: ocultos en móvil */
+  .nav-links { display: none; }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .nav-cta {
+    padding: 10px 14px;
+    font-size: 13px;
+    gap: 7px;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: var(--tap);
+    height: var(--tap);
+    margin-right: -10px;
+  }
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--on-dark);
+    transition: transform .3s var(--ease), opacity .2s var(--ease);
+  }
+  .hamburger[aria-expanded='true'] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded='true'] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  @media (min-width: 480px) {
+    .nav-logo img { height: 32px; }
+    .nav-actions { gap: 10px; }
+  }
+
+  @media (min-width: 900px) {
+    .nav-inner { gap: 32px; }
+    .nav-logo img { height: 36px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(20px, 2.5vw, 36px);
+    }
+    .nav-links a {
+      font-size: 13px;
+      letter-spacing: .02em;
+      color: rgba(240,237,230,.7);
+      padding-block: 12px;
+      transition: color .2s;
+    }
+    .nav-links a:hover,
+    .nav-links a[aria-current='page'] { color: var(--on-dark); }
+
+    .nav-cta { padding: 10px 20px; }
+    .hamburger { display: none; }
+  }
+</style>

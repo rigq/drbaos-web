@@ -1,0 +1,16 @@
+{
+  "name": "Clínica Dental Dr. Baos",
+  "short_name": "Dr. Baos",
+  "description": "Odontología de vanguardia con trato cercano. Dentista en Argés (Toledo) y Majadahonda (Madrid).",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#141210",
+  "background_color": "#141210",
+  "lang": "es",
+  "icons": [
+    { "src": "/assets/images/brand/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/images/brand/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/images/brand/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
