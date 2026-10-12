@@ -1,0 +1,84 @@
+---
+import type { Treatment } from '../../data/treatments';
+
+interface Props {
+  treatment: Treatment;
+}
+
+const { treatment: t } = Astro.props;
+---
+<li class="tr">
+  <a href={t.url}>
+    <span class="tr-num">{t.num}</span>
+    <span class="tr-main">
+      <span class="tr-name">{t.name}</span>
+      <span class="tr-desc">{t.desc}</span>
+    </span>
+    <span class="tr-arrow" aria-hidden="true">→</span>
+  </a>
+</li>
+
+<style>
+  .tr { border-bottom: 1px solid var(--border-dark); }
+  .tr a {
+    display: grid;
+    grid-template-columns: 36px 1fr 20px;
+    align-items: center;
+    gap: 14px;
+    padding-block: 18px;
+    transition: padding-left .3s var(--ease);
+  }
+  .tr-num {
+    font-family: var(--font-serif);
+    font-size: 12px;
+    letter-spacing: .1em;
+    color: var(--muted-dark);
+    transition: color .25s;
+  }
+  .tr-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .tr-name {
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 2.2vw + 10px, 26px);
+    line-height: 1.25;
+    color: var(--on-dark);
+    transition: color .25s;
+  }
+  .tr-desc {
+    font-size: 13px;
+    color: var(--muted-dark);
+  }
+  .tr-arrow {
+    font-size: 16px;
+    text-align: right;
+    color: var(--muted-dark);
+    transition: color .25s, transform .25s;
+  }
+
+  @media (min-width: 900px) {
+    .tr a {
+      grid-template-columns: 64px 1fr 28px;
+      gap: 24px;
+      padding-block: 24px;
+    }
+    .tr-main {
+      display: grid;
+      grid-template-columns: 1fr minmax(200px, 300px);
+      align-items: center;
+      gap: 24px;
+    }
+    .tr-desc { text-align: right; }
+    .tr-arrow { color: transparent; }
+  }
+
+  @media (hover: hover) {
+    .tr:hover a { padding-left: 10px; }
+    .tr:hover .tr-num { color: var(--gold); }
+    .tr:hover .tr-name { color: var(--white); }
+    .tr:hover .tr-arrow { color: var(--gold); transform: translateX(4px); }
+  }
+</style>

@@ -1,0 +1,182 @@
+---
+// Slider de reseñas: CSS scroll-snap nativo + flechas. Sin librerías.
+import { reviews, rating } from '../../data/reviews';
+---
+<section class="section section--cream resenas" id="resenas" aria-roledescription="carrusel" aria-label="Reseñas de pacientes">
+  <div class="container">
+    <header class="resenas-header">
+      <span class="eyebrow">Reseñas de pacientes</span>
+      <h2 class="h2">{rating.score} sobre 5 en Google</h2>
+      <p class="lead">{rating.count} reseñas verificadas · Argés y Majadahonda</p>
+    </header>
+
+    <div class="resenas-track" data-track tabindex="0">
+      {reviews.map((r, i) => (
+        <article class="review" aria-label={`Reseña ${i + 1} de ${reviews.length}`}>
+          <span class="review-stars" role="img" aria-label="5 de 5 estrellas">★★★★★</span>
+          <p class="review-text">{r.text}</p>
+          <div class="review-sep" aria-hidden="true"></div>
+          <span class="review-author">{r.author} · {r.clinic}</span>
+        </article>
+      ))}
+    </div>
+
+    <div class="resenas-footer">
+      <a href={rating.googleUrl} class="resenas-link" target="_blank" rel="noopener">Ver todas las reseñas en Google →</a>
+      <div class="resenas-arrows">
+        <button type="button" class="resenas-arrow" data-dir="-1" aria-label="Reseña anterior">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+        </button>
+        <button type="button" class="resenas-arrow" data-dir="1" aria-label="Reseña siguiente">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .resenas-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .resenas-header .eyebrow { color: var(--muted-light); }
+  .resenas-header .h2 { margin-bottom: 8px; }
+  .resenas-header .lead { font-size: 14px; }
+
+  .resenas-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* El track sangra hasta el borde en móvil para que se intuya el deslizamiento */
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+  }
+  .resenas-track::-webkit-scrollbar { display: none; }
+  .resenas-track:focus-visible { outline-offset: -2px; }
+
+  .review {
+    flex: 0 0 88%;
+    scroll-snap-align: start;
+    background: var(--white);
+    border: 1px solid var(--border-light);
+    padding: 28px 22px;
+    transition: box-shadow .3s;
+  }
+  .review-stars {
+    display: block;
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+  }
+  .review-text {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 1.75;
+    color: #1E1C1A;
+    margin-bottom: 22px;
+  }
+  .review-sep {
+    width: 32px;
+    height: 1px;
+    background: var(--border-light);
+    margin-bottom: 18px;
+  }
+  .review-author {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+  }
+
+  .resenas-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .resenas-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gold-ink);
+  }
+  .resenas-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .resenas-arrows { display: flex; gap: 8px; flex-shrink: 0; }
+  .resenas-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--tap);
+    height: var(--tap);
+    border: 1px solid var(--border-light);
+    color: var(--black);
+    transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease), opacity .2s;
+  }
+  .resenas-arrow:hover:not(:disabled) {
+    background: var(--black);
+    color: var(--cream);
+    border-color: var(--black);
+  }
+  .resenas-arrow:disabled { opacity: .35; cursor: default; }
+
+  @media (min-width: 640px) {
+    .resenas-track { gap: 24px; }
+    .review { flex-basis: 70%; padding: 36px; }
+  }
+
+  @media (min-width: 900px) {
+    .resenas-header { margin-bottom: 64px; }
+    .resenas-track {
+      margin-inline: 0;
+      padding-inline: 0;
+      scroll-padding-inline: 0;
+    }
+    .review { flex-basis: calc(50% - 12px); padding: 40px; }
+    .review:hover { box-shadow: 0 12px 40px rgba(20,18,16,.07); }
+    .resenas-footer { margin-top: 36px; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.resenas').forEach((section) => {
+    const track = section.querySelector<HTMLElement>('[data-track]');
+    const buttons = section.querySelectorAll<HTMLButtonElement>('.resenas-arrow');
+    if (!track) return;
+
+    const step = () => {
+      const card = track.querySelector<HTMLElement>('.review');
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return card ? card.offsetWidth + gap : track.clientWidth;
+    };
+
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      buttons.forEach((b) => {
+        b.disabled = b.dataset.dir === '-1' ? track.scrollLeft <= 2 : track.scrollLeft >= max;
+      });
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        track.scrollBy({ left: Number(b.dataset.dir) * step(), behavior: 'smooth' });
+      }),
+    );
+
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+</script>

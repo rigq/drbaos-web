@@ -1,0 +1,175 @@
+---
+// Formulario de cita → WhatsApp. Sin backend: construye el mensaje y abre wa.me.
+// Validación heredada del sitio actual: nombre 2–60 caracteres, teléfono 9–15 dígitos.
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { clinics } from '../../data/clinics';
+
+const clinicData = Object.fromEntries(
+  clinics.map((c) => [c.id, { whatsapp: c.whatsapp, label: `${c.shortName} (${c.name.split(', ')[1]})` }]),
+);
+---
+<form class="cita-form" data-cita-form data-clinics={JSON.stringify(clinicData)} novalidate>
+  <div class="field">
+    <label for="cf-clinica">Clínica</label>
+    <select id="cf-clinica" name="clinica">
+      {clinics.map((c) => <option value={c.id}>{c.name} — {c.phone[0]}</option>)}
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="cf-nombre">Nombre</label>
+    <input type="text" id="cf-nombre" name="nombre" placeholder="Tu nombre completo" autocomplete="name" minlength="2" maxlength="60" required aria-describedby="cf-nombre-err" />
+    <span class="field-error" id="cf-nombre-err" aria-live="polite"></span>
+  </div>
+
+  <div class="field">
+    <label for="cf-telefono">Teléfono</label>
+    <input type="tel" id="cf-telefono" name="telefono" placeholder="Tu número de teléfono" autocomplete="tel" inputmode="tel" maxlength="20" required aria-describedby="cf-telefono-err" />
+    <span class="field-error" id="cf-telefono-err" aria-live="polite"></span>
+  </div>
+
+  <div class="field">
+    <label for="cf-mensaje">¿En qué podemos ayudarte? <span class="optional">(opcional)</span></label>
+    <textarea id="cf-mensaje" name="mensaje" rows="4" maxlength="500" placeholder="Describe brevemente qué necesitas o en qué tratamiento estás interesado..."></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-gold btn-full cita-submit">
+    <WhatsAppIcon size={16} />
+    Enviar solicitud por WhatsApp
+  </button>
+  <p class="form-note">
+    Al enviar abrirás WhatsApp con tu mensaje preparado. Te respondemos en minutos.
+    Tus datos solo se usan para gestionar tu cita (<a href="/politica-privacidad">política de privacidad</a>).
+  </p>
+</form>
+
+<style>
+  .cita-form { display: flex; flex-direction: column; }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted-dark);
+    margin-bottom: 8px;
+  }
+  .optional { opacity: .6; font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    background: rgba(240,237,230,.06);
+    border: 1px solid var(--border-dark);
+    border-radius: 3px;
+    color: var(--on-dark);
+    font-size: 16px; /* 16px evita el zoom automático de iOS */
+    outline: none;
+    transition: border-color .2s;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder { color: var(--muted-dark); }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus { border-color: var(--gold); }
+
+  .field select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 44px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23F0EDE6' stroke-opacity='.6' stroke-width='1.5'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+  .field select option { background: var(--black); color: var(--on-dark); }
+  .field textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+  .field.has-error input { border-color: #E08A6E; }
+  .field-error {
+    display: block;
+    min-height: 0;
+    font-size: 12px;
+    color: #E8A48C;
+    margin-top: 6px;
+  }
+  .field-error:empty { display: none; }
+
+  .cita-submit { margin-top: 8px; min-height: 52px; font-size: 15px; }
+
+  .form-note {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted-dark);
+    margin-top: 14px;
+  }
+  .form-note a { color: var(--on-dark); text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (min-width: 900px) {
+    .field input,
+    .field select,
+    .field textarea { font-size: 14px; }
+  }
+</style>
+
+<script>
+  type ClinicMap = Record<string, { whatsapp: string; label: string }>;
+
+  const countDigits = (s: string) => (s.match(/\d/g) || []).length;
+  const isValidPhone = (s: string) =>
+    /^[+\d\s]+$/.test(s) && countDigits(s) >= 9 && countDigits(s) <= 15;
+
+  document.querySelectorAll<HTMLFormElement>('[data-cita-form]').forEach((form) => {
+    const clinics: ClinicMap = JSON.parse(form.dataset.clinics || '{}');
+    const nombre = form.elements.namedItem('nombre') as HTMLInputElement;
+    const telefono = form.elements.namedItem('telefono') as HTMLInputElement;
+    const mensaje = form.elements.namedItem('mensaje') as HTMLTextAreaElement;
+    const clinica = form.elements.namedItem('clinica') as HTMLSelectElement;
+
+    const setError = (input: HTMLInputElement, message: string) => {
+      const field = input.closest('.field');
+      const out = field?.querySelector('.field-error');
+      field?.classList.toggle('has-error', Boolean(message));
+      input.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (out) out.textContent = message;
+    };
+
+    // Teléfono: solo dígitos, espacios y +
+    telefono.addEventListener('input', () => {
+      const clean = telefono.value.replace(/[^\d+\s]/g, '');
+      if (clean !== telefono.value) telefono.value = clean;
+      setError(telefono, '');
+    });
+    nombre.addEventListener('input', () => setError(nombre, ''));
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const n = nombre.value.trim();
+      const t = telefono.value.trim();
+      const m = mensaje.value.trim();
+      let ok = true;
+      setError(nombre, '');
+      setError(telefono, '');
+
+      if (!n) { setError(nombre, 'Este campo es obligatorio'); ok = false; }
+      else if (n.length < 2) { setError(nombre, 'Escribe tu nombre completo'); ok = false; }
+
+      if (!t) { setError(telefono, 'Este campo es obligatorio'); ok = false; }
+      else if (!isValidPhone(t)) { setError(telefono, 'Introduce un teléfono válido (9 dígitos, solo números)'); ok = false; }
+
+      if (!ok) {
+        form.querySelector<HTMLInputElement>('[aria-invalid="true"]')?.focus();
+        return;
+      }
+
+      const c = clinics[clinica.value];
+      if (!c) return;
+      const text = `Hola, soy ${n}. Mi teléfono es ${t}. Me gustaría pedir cita en la clínica de ${c.label}.${m ? ' ' + m : ''}`;
+      window.open(`https://wa.me/${c.whatsapp}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    });
+  });
+</script>

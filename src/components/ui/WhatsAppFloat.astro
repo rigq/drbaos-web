@@ -1,0 +1,148 @@
+---
+// Botones flotantes (docs/design-system.md §5):
+//  1. WhatsApp verde: acceso directo permanente (clínica principal).
+//  2. "?" negro: micro-menú con el WhatsApp de cada clínica. Futuro punto de entrada del chatbot.
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { clinics, getClinic, waUrl } from '../../data/clinics';
+---
+<div class="floats">
+  <div class="help">
+    <div class="help-menu" id="helpMenu" hidden>
+      <p class="help-title">¿Con qué clínica quieres hablar?</p>
+      {clinics.map((c) => (
+        <a href={waUrl(c)} class="help-link" target="_blank" rel="noopener">
+          <span>{c.name}</span>
+          <span class="help-phone">{c.phone[0]}</span>
+        </a>
+      ))}
+    </div>
+    <button
+      type="button"
+      class="help-btn"
+      id="helpBtn"
+      aria-label="Ayuda: elegir clínica"
+      aria-expanded="false"
+      aria-controls="helpMenu"
+    >?</button>
+  </div>
+
+  <a class="wa-float" href={waUrl(getClinic('arges'))} target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <WhatsAppIcon size={26} />
+  </a>
+</div>
+
+<style>
+  .floats {
+    position: fixed;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .wa-float {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #25D366;
+    color: var(--white);
+    box-shadow: 0 4px 20px rgba(37,211,102,.4);
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .wa-float:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(37,211,102,.5);
+  }
+
+  .help { position: relative; }
+  .help-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--black);
+    color: var(--on-dark);
+    border: 1px solid rgba(240,237,230,.18);
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(20,18,16,.25);
+    transition: border-color .2s, transform .25s var(--ease);
+  }
+  .help-btn:hover { border-color: var(--gold); }
+  .help-btn[aria-expanded='true'] { border-color: var(--gold); color: var(--gold); }
+
+  .help-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    width: min(280px, calc(100vw - 32px));
+    padding: 18px;
+    background: var(--black);
+    border: 1px solid rgba(240,237,230,.12);
+    box-shadow: 0 16px 40px rgba(20,18,16,.3);
+  }
+  .help-menu[hidden] { display: none; }
+  .help-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted-dark);
+    margin-bottom: 10px;
+  }
+  .help-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: var(--tap);
+    padding-block: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--on-dark);
+    border-top: 1px solid var(--border-dark);
+  }
+  .help-link:hover { color: var(--gold); }
+  .help-phone { font-size: 12px; font-weight: 400; color: var(--muted-dark); white-space: nowrap; }
+
+  @media (min-width: 900px) {
+    .floats {
+      right: calc(28px + env(safe-area-inset-right, 0px));
+      bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('helpBtn');
+  const menu = document.getElementById('helpMenu');
+
+  if (btn && menu) {
+    const setOpen = (open: boolean) => {
+      menu.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(menu.hidden);
+    });
+    document.addEventListener('click', (e) => {
+      if (!menu.hidden && !menu.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) {
+        setOpen(false);
+        btn.focus();
+      }
+    });
+  }
+</script>

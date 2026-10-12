@@ -1,0 +1,25 @@
+---
+import TreatmentRow from '../ui/TreatmentRow.astro';
+import { treatments } from '../../data/treatments';
+---
+<section class="section section--black tratamientos" id="tratamientos">
+  <div class="container">
+    <header class="tratamientos-header">
+      <span class="eyebrow">Nuestros Servicios</span>
+      <h2 class="h2">Tratamientos</h2>
+    </header>
+    <ul class="tratamientos-list">
+      {treatments.map((t) => <TreatmentRow treatment={t} />)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .tratamientos-header { margin-bottom: 40px; }
+  .tratamientos-header .eyebrow { color: var(--gold); }
+  .tratamientos-list { border-top: 1px solid var(--border-dark); }
+
+  @media (min-width: 900px) {
+    .tratamientos-header { margin-bottom: 64px; }
+  }
+</style>

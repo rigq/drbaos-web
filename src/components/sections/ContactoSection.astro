@@ -1,0 +1,80 @@
+---
+import ContactForm from '../forms/ContactForm.astro';
+import ClinicDetails from '../ui/ClinicDetails.astro';
+import { clinics } from '../../data/clinics';
+---
+<section class="section section--black contacto" id="contacto">
+  <div class="container">
+    <header class="contacto-header">
+      <span class="eyebrow">Pide tu Cita</span>
+      <h2 class="h2">Estamos aquí para ti</h2>
+    </header>
+
+    <div class="contacto-grid">
+      <ContactForm />
+
+      <div class="clinics-info">
+        {clinics.map((c) => (
+          <div class="clinic-block">
+            <span class="clinic-block-tag">{c.tag}</span>
+            <h3 class="clinic-block-name">{c.name}</h3>
+            <ClinicDetails clinic={c} tone="dark" />
+            <a href={c.mapsUrl} class="clinic-maps" target="_blank" rel="noopener">Cómo llegar →</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacto-header { margin-bottom: 40px; }
+  .contacto-header .eyebrow { color: var(--gold); }
+  .contacto-header .h2 { color: var(--on-dark); }
+
+  .contacto-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .clinics-info { border-top: 1px solid var(--border-dark); }
+  .clinic-block {
+    padding-block: 28px;
+    border-bottom: 1px solid var(--border-dark);
+  }
+  .clinic-block-tag {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .clinic-block-name {
+    font-size: 22px;
+    letter-spacing: -.3px;
+    color: var(--on-dark);
+    margin-bottom: 18px;
+  }
+  .clinic-maps {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gold);
+    transition: color .2s;
+  }
+  .clinic-maps:hover { color: var(--gold-lt); }
+
+  @media (min-width: 900px) {
+    .contacto-header { margin-bottom: 64px; }
+    .contacto-grid { grid-template-columns: 1fr 1fr; gap: clamp(48px, 6vw, 80px); }
+    .clinic-block { padding-block: 36px; }
+    .clinic-maps { font-size: 13px; }
+  }
+</style>

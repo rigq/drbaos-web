@@ -11,6 +11,7 @@
   --white:    #FFFFFF;
   --gold:     #C9A060;
   --gold-lt:  #DDB978;
+  --gold-ink: #8A6A35;   /* dorado para TEXTO sobre fondo claro (contraste AA) */
   --on-dark:  #F0EDE6;
   --muted-dark:  rgba(240,237,230,.45);
   --border-dark: rgba(240,237,230,.10);

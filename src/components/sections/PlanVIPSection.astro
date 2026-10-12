@@ -1,0 +1,112 @@
+---
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { getClinic, waUrl } from '../../data/clinics';
+
+const benefits = [
+  'Revisiones periódicas incluidas (diagnóstico completo)',
+  'Limpiezas dentales profesionales sin coste adicional',
+  'Descuento exclusivo en todos los tratamientos',
+  'Cita prioritaria — sin esperas, siempre disponible',
+  'Urgencias atendidas sin cargo adicional',
+  'Extensible a toda la unidad familiar',
+];
+
+const waHref = waUrl(getClinic('arges'), 'Hola, me gustaría saber más sobre el Plan VIP.');
+---
+<section class="section section--black vip" id="plan-vip">
+  <div class="container vip-grid">
+    <div>
+      <span class="eyebrow vip-eyebrow">Plan de Salud Dental</span>
+      <h2 class="h2 vip-h2">Plan VIP<br />Dr. Baos</h2>
+      <p class="lead vip-intro">Un plan anual que convierte el cuidado dental de tu familia en algo sencillo, predecible y sin sorpresas.</p>
+      <ul class="vip-benefits">
+        {benefits.map((b) => (
+          <li><span class="dash" aria-hidden="true">—</span><span>{b}</span></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="vip-panel">
+      <span class="vip-panel-tag">Disponible en Argés y Majadahonda</span>
+      <h3 class="vip-panel-title">Hazte miembro<br />del Plan VIP</h3>
+      <p class="vip-panel-desc">Pregúntanos por las condiciones en tu próxima visita o escríbenos por WhatsApp. Te lo explicamos sin compromiso.</p>
+      <a href={waHref} class="btn btn-gold btn-full" target="_blank" rel="noopener">
+        <WhatsAppIcon size={15} />
+        Consultar Plan VIP por WhatsApp
+      </a>
+      <p class="vip-panel-note">Sin permanencia obligatoria. Sin letra pequeña. Pregunta sin compromiso.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .vip-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .vip-eyebrow { color: var(--gold); }
+  .vip-h2 { color: var(--on-dark); margin-bottom: 16px; }
+  .vip-intro { margin-bottom: 32px; }
+
+  .vip-benefits { border-top: 1px solid var(--border-dark); }
+  .vip-benefits li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-block: 14px;
+    border-bottom: 1px solid var(--border-dark);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--on-dark);
+  }
+  .dash { color: var(--gold); font-weight: 300; flex-shrink: 0; }
+
+  .vip-panel {
+    border: 1px solid var(--border-dark);
+    padding: 28px 20px;
+  }
+  .vip-panel-tag {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+  .vip-panel-title {
+    font-size: clamp(24px, 1.5vw + 18px, 28px);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -.3px;
+    color: var(--on-dark);
+    margin-bottom: 12px;
+  }
+  .vip-panel-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted-dark);
+    margin-bottom: 28px;
+  }
+  .vip-panel-note {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted-dark);
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-dark);
+  }
+
+  @media (min-width: 640px) {
+    .vip-panel { padding: 40px; }
+  }
+
+  @media (min-width: 900px) {
+    .vip-grid { grid-template-columns: 1fr 1fr; gap: clamp(48px, 6vw, 80px); }
+    .vip-intro { margin-bottom: 40px; }
+    .vip-benefits li { font-size: 14px; }
+    .vip-panel-desc { margin-bottom: 32px; }
+  }
+</style>

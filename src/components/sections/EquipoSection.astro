@@ -1,0 +1,83 @@
+---
+import { team } from '../../data/team';
+---
+<section class="section section--white equipo" id="equipo">
+  <div class="container">
+    <header class="equipo-header">
+      <span class="eyebrow">Nuestros Especialistas</span>
+      <h2 class="h2">El equipo</h2>
+    </header>
+    <div class="equipo-grid">
+      {team.map((m) => (
+        <article class="doctor">
+          <div class="doctor-photo">
+            <img src={m.photo} alt={m.name} width="600" height="750" loading="lazy" decoding="async" />
+          </div>
+          <div class="doctor-info">
+            <h3 class="doctor-name">{m.name}</h3>
+            <p class="doctor-role">{m.role}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .equipo-header { margin-bottom: 40px; }
+  .equipo-header .eyebrow { color: var(--muted-light); }
+
+  .equipo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 400px;
+  }
+  .doctor-photo {
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: var(--cream);
+  }
+  .doctor-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform .7s var(--ease);
+  }
+  .doctor-info {
+    padding-block: 18px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .doctor-name {
+    font-size: 22px;
+    color: var(--black);
+    letter-spacing: -.3px;
+  }
+  .doctor-role {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+    margin-top: 4px;
+  }
+
+  @media (min-width: 640px) {
+    .equipo-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: none;
+    }
+    .doctor-name { font-size: clamp(18px, 1.4vw + 8px, 22px); }
+  }
+
+  @media (min-width: 900px) {
+    .equipo-header { margin-bottom: 64px; }
+    .equipo-grid { gap: 40px; }
+  }
+
+  @media (hover: hover) {
+    .doctor:hover .doctor-photo img { transform: scale(1.04); }
+  }
+</style>

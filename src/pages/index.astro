@@ -1,16 +1,26 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
+import HeroSection from '../components/hero/HeroSection.astro';
+import ClinicasSection from '../components/sections/ClinicasSection.astro';
+import SobreSection from '../components/sections/SobreSection.astro';
+import TratamientosSection from '../components/sections/TratamientosSection.astro';
+import EquipoSection from '../components/sections/EquipoSection.astro';
+import PlanVIPSection from '../components/sections/PlanVIPSection.astro';
+import ResenasSlider from '../components/sections/ResenasSlider.astro';
+import ContactoSection from '../components/sections/ContactoSection.astro';
+// noindex mientras sea staging: quitar en el cutover (Fase 6)
 ---
 <PageLayout
   title="Clínica Dental Dr. Baos | Dentista en Toledo y Madrid"
-  description="Clínica Dental Dr. Baos: odontología de vanguardia con trato cercano. Argés (Toledo) y Majadahonda (Madrid). Pide cita por WhatsApp."
+  description="Clínica Dental Dr. Baos: odontología de vanguardia con trato cercano. Argés (Toledo) y Majadahonda (Madrid). 4,9★ en Google. Pide cita por WhatsApp."
   noindex
 >
-  <!-- Fase 1: página vacía para verificar layout, nav, footer y deploy. La homepage llega en la Fase 2. -->
-  <section class="section section--cream">
-    <div class="container">
-      <span class="eyebrow">Fase 1 · Fundamentos</span>
-      <h1 class="h2">Clínica Dental Dr. Baos</h1>
-    </div>
-  </section>
+  <HeroSection />
+  <ClinicasSection />
+  <SobreSection />
+  <TratamientosSection />
+  <EquipoSection />
+  <PlanVIPSection />
+  <ResenasSlider />
+  <ContactoSection />
 </PageLayout>

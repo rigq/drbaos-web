@@ -1,17 +1,8 @@
 ---
 import { clinics, telHref } from '../../data/clinics';
+import { treatments } from '../../data/treatments';
 
-// Pasará a leerse de src/data/treatments.ts en la Fase 2.
-const treatmentLinks = [
-  { label: 'Estética Dental', href: '/tratamientos/estetica-dental' },
-  { label: 'Implantes Dentales', href: '/tratamientos/implantes-dentales' },
-  { label: 'Ortodoncia Invisible', href: '/tratamientos/ortodoncia-invisible' },
-  { label: 'Endodoncia', href: '/tratamientos/endodoncia' },
-  { label: 'Periodoncia', href: '/tratamientos/periodoncia' },
-  { label: 'Cirugía Oral', href: '/tratamientos/cirugia-oral' },
-  { label: 'Odontopediatría', href: '/tratamientos/odontopediatria' },
-  { label: 'Urgencias', href: '/tratamientos/urgencias-dentales' },
-];
+const treatmentLinks = treatments.map((t) => ({ label: t.shortName, href: t.url }));
 
 const clinicLinks = [
   ...clinics.map((c) => ({ label: c.name, href: c.pageUrl })),

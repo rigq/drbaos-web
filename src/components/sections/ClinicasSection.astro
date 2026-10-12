@@ -1,0 +1,105 @@
+---
+import ClinicCard from '../ui/ClinicCard.astro';
+import { clinics } from '../../data/clinics';
+
+const images = {
+  arges:       { src: '/assets/images/arges/fachada_arges.avif', width: 1024, height: 712 },
+  majadahonda: { src: '/assets/images/majadahonda/fachada-majadahonda.jpg', width: 1200, height: 905 },
+};
+---
+<section class="section section--white centros" id="centros">
+  <div class="container">
+    <header class="centros-header">
+      <span class="eyebrow">Nuestros Centros</span>
+      <h2 class="h2">Encuentra tu clínica</h2>
+      <p class="lead">La misma calidad y el mismo equipo, más cerca de ti.</p>
+    </header>
+
+    <div class="centros-grid">
+      {clinics.map((c) => <ClinicCard clinic={c} image={images[c.id]} />)}
+    </div>
+
+    <div class="coslada">
+      <div>
+        <span class="coslada-label">Próximamente</span>
+        <div class="coslada-name">Coslada, Madrid</div>
+      </div>
+      <span class="coslada-badge">En preparación</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .centros-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .centros-header .eyebrow { color: var(--muted-light); }
+  .centros-header .lead {
+    max-width: 480px;
+    margin: 12px auto 0;
+  }
+
+  .centros-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--border-light);
+  }
+  .centros-grid > :global(.centro + .centro) {
+    border-top: 1px solid var(--border-light);
+  }
+
+  .coslada {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 24px 20px;
+    border: 1px solid var(--border-light);
+    border-top: none;
+    background: #FAFAF8;
+  }
+  .coslada-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+  }
+  .coslada-name {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 500;
+    color: #8F8A84;
+    margin-top: 4px;
+  }
+  .coslada-badge {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted-light);
+    padding: 6px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+  }
+
+  @media (min-width: 640px) {
+    .coslada {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 32px;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .centros-header { margin-bottom: 56px; }
+    .centros-grid { grid-template-columns: 1fr 1fr; }
+    .centros-grid > :global(.centro + .centro) {
+      border-top: none;
+      border-left: 1px solid var(--border-light);
+    }
+    .coslada { padding: 28px 36px; }
+  }
+</style>

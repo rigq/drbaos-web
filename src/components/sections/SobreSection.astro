@@ -1,0 +1,71 @@
+---
+const points = [
+  'Tecnología diagnóstica de última generación',
+  'Equipo multidisciplinar de especialistas en cada área',
+  'Atención personalizada sin listas de espera',
+  'Sin derivaciones: todo bajo un mismo techo',
+];
+---
+<section class="section section--cream sobre" id="sobre">
+  <div class="container sobre-grid">
+    <div class="sobre-img">
+      <img src="/assets/images/clinica/clinica.avif" alt="Interior de la Clínica Dental Dr. Baos" width="1440" height="1920" loading="lazy" decoding="async" />
+    </div>
+    <div class="sobre-text">
+      <span class="eyebrow">Nuestra Clínica</span>
+      <h2 class="h2">Tecnología punta.<br />Trato humano.</h2>
+      <p class="lead">Combinamos equipamiento diagnóstico de última generación con un equipo multidisciplinar centrado en ofrecerte un cuidado integral, sin prisas y adaptado a ti.</p>
+      <ul class="sobre-points">
+        {points.map((p) => (
+          <li><span class="dash" aria-hidden="true">—</span><span>{p}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sobre-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .sobre-img img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .sobre-text .eyebrow { color: var(--muted-light); }
+  .sobre-text .h2 { margin-bottom: 20px; }
+  .sobre-text .lead { margin-bottom: 28px; }
+
+  .sobre-points { border-top: 1px solid var(--border-light); }
+  .sobre-points li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding-block: 15px;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 15px;
+    font-weight: 450;
+    line-height: 1.55;
+  }
+  .dash {
+    color: var(--gold-ink);
+    font-weight: 300;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 640px) {
+    .sobre-img img { aspect-ratio: 16 / 10; }
+  }
+
+  @media (min-width: 900px) {
+    .sobre-grid { grid-template-columns: 1fr 1fr; gap: clamp(48px, 6vw, 80px); }
+    .sobre-img img { aspect-ratio: auto; height: 560px; }
+    .sobre-text .lead { margin-bottom: 32px; }
+    .sobre-points li { font-size: 14px; }
+  }
+</style>
